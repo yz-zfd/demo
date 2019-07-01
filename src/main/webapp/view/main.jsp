@@ -31,9 +31,9 @@
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
                         &times;
                     </button>
-                    <h4 class="modal-title" id="myModalLabel">
-                        注册新用户
-                    </h4>
+                  <%--  <h4 class="modal-title" id="myModalLabel">
+                        注册新用户!!!8499949448
+                    </h4>--%>
                 </div>
                 <div class="modal-body">
                     <form>
