@@ -17,6 +17,8 @@
     <link rel="stylesheet" href="../css/bootstrap-table.css"/>
     <script src="../js/bootstrap-table.js"></script>
     <script src="../js/bootstrap-table-zh-CN.js"></script>
+    <script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap-fileinput.min.js"></script>
+    <script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap-fileinput.min.css"></script>
 </head>
 <body>
 <div class="container">
@@ -25,19 +27,88 @@
         <button class="btn btn-primary">编辑</button>
     </div>
     <div class="modal fade" id="register" tabindex="-1" role="dialog" aria-labelledby="registerLabel" aria-hidden="true">
-        <div class="modal-dialog">
+        <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
                         &times;
                     </button>
-                  <%--  <h4 class="modal-title" id="myModalLabel">
-                        注册新用户!!!8499949448
-                    </h4>--%>
+                  <h4 class="modal-title" id="myModalLabel">
+                        注册新用户!!!
+                  </h4>
                 </div>
                 <div class="modal-body">
-                    <form>
-                        <div></div>
+                    <form class="bs-example bs-example-form" role="form">
+                        <div class="row">
+                            <div class="col-xs-4 col-sm-4 col-xs-6">
+                                <div class="input-group">
+                                    <span class="input-group-addon"><font color="red">*</font> 姓 名</span>
+                                    <input name="name" class="form-control" type="text" value=""/>
+                                </div>
+                                <br/>
+                                <div class="input-group">
+                                    <span class="input-group-addon"><font color="red">*</font>手机号</span>
+                                    <input name="name" class="form-control" type="text" value=""/>
+                                </div>
+                                <br/>
+                                <div class="input-group">
+                                    <span class="input-group-addon"><font color="red">*</font>身份证号</span>
+                                    <input name="name" class="form-control" type="text" value=""/>
+                                </div>
+                                <br/>
+                                <div class="input-group">
+                                    <span class="input-group-addon"><font color="red">*</font> 性 别</span>
+                                    <select class="form-control">
+                                        <option>男</option>
+                                        <option>女</option>
+                                    </select>
+                                </div>
+                                <br/>
+                                <div class="input-group">
+                                    <span class="input-group-addon"><font color="red">*</font>出生日期</span>
+                                    <input name="name" class="form-control" type="text" value=""/>
+                                </div>
+                                <br/>
+                            </div>
+                            <div class="col-xs-4 col-sm-4 col-xs-6">
+                                <div class="input-group">
+                                    <span class="input-group-addon"> 国 籍</span>
+                                    <input name="name" class="form-control" type="text" value=""/>
+                                </div>
+                                <br/>
+                                <div class="input-group">
+                                    <span class="input-group-addon"><font color="red">*</font>婚姻状态</span>
+                                    <select class="form-control">
+                                        <option>未婚</option>
+                                        <option>已婚</option>
+                                    </select>
+                                </div>
+                                <br/>
+                                <div class="input-group">
+                                    <span class="input-group-addon"><font color="red">*</font>所属单位</span>
+                                    <input name="name" class="form-control" type="text" value=""/>
+                                </div>
+                                <br/>
+                                <div class="input-group">
+                                    <span class="input-group-addon">外语能力</span>
+                                    <input name="name" class="form-control" type="text" value=""/>
+                                </div>
+                                <br/>
+                                <div class="input-group">
+                                    <span class="input-group-addon"> 学 历</span>
+                                    <input name="name" class="form-control" type="text" value=""/>
+                                </div>
+                                <br/>
+                            </div>
+                            <div class="col-xs-4 col-sm-4 col-xs-6 ">
+                                <div class="fileinput fileinput-new" data-provides="fileinput" id="uploadImgDiv" align="center">
+                                    <br/>
+                                    <img src="/img/samplephoto.png"/>
+                                    <br/>
+                                    <input type="file" name="photo" id="driverPhoto">
+                                </div>
+                          </div>
+                        </div>
                     </form>
                 </div>
                 <div class="modal-footer">
@@ -97,5 +168,17 @@
             toolbar:"#toolbar",
         }
     );
+    $("#driverPhoto").fileinput({
+        uploadUrl: "/driverImg",//上传路径
+        addlwedFileExtensions:["jpg","png","gif"],
+        showCaption:false,//是否显示标题
+        showUpload:true,//显示上传按钮
+        showRemove:true,
+        showClose:true,
+        borderTopWidth:{
+            actionDelete:"",
+        },
+        browseClass:"btn btn-primary",//按钮样式
+    })
 </script>
 </html>
