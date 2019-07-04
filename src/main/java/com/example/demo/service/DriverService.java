@@ -34,8 +34,7 @@ public class DriverService {
         Map<String,Object> map=new HashMap<>();
         DriverInformation driver = new DriverInformation();
         try {
-            //DriverManageUtil.parseFileFormUtil(map,request);
-            Map<String, String[]> map1 = request.getParameterMap();
+            DriverManageUtil.parseFileFormUtil(map,request);
             BeanUtils.populate(driver,map);
             System.out.println(driver);
         } catch (Exception e) {

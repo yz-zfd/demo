@@ -14,18 +14,18 @@
     <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
     <script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
     <script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
-    <link rel="stylesheet" href="../css/bootstrap-table.css"/>
-    <link rel="stylesheet" href="../css/bootstrap-fileinput.min.css">
-    <script src="../js/main_js.js"></script>
-    <script src="../js/bootstrap-table.js"></script>
-    <script src="../js/bootstrap-table-zh-CN.js"></script>
-    <script src="../js/bootstrap-fileinput.min.js"></script>
-    <script src="../js/bootstrap-fileinput.zh.js"></script>
+    <link rel="stylesheet" href="../../css/bootstrap-table.css"/>
+    <link rel="stylesheet" href="../../css/bootstrap-fileinput.min.css">
+    <script src="../../js/main_js.js"></script>
+    <script src="../../js/bootstrap-table.js"></script>
+    <script src="../../js/bootstrap-table-zh-CN.js"></script>
+    <script src="../../js/bootstrap-fileinput.min.js"></script>
+    <script src="../../js/bootstrap-fileinput.zh.js"></script>
 </head>
 <body>
 <div class="container">
     <div id="toolbar">
-        <button class="btn btn-primary" data-toggle="modal" data-target="#registerModal">注册</button>
+        <button id="registerButton" class="btn btn-primary" data-toggle="modal" data-target="#registerModal">注册</button>
         <button class="btn btn-primary">编辑</button>
     </div>
     <div class="modal fade" id="registerModal" tabindex="-1" role="dialog" aria-labelledby="registerLabel" aria-hidden="true">
@@ -45,17 +45,17 @@
                             <div class="col-xs-4 col-sm-4 col-xs-6">
                                 <div class="input-group">
                                     <span class="input-group-addon"><font color="red">*</font> 姓 名</span>
-                                    <input name="name" class="form-control" type="text" />
+                                    <input id="name" name="name" class="form-control" type="text" />
                                 </div>
                                 <br/>
                                 <div class="input-group">
                                     <span class="input-group-addon"><font color="red">*</font>手机号</span>
-                                    <input name="phone_number" class="form-control" type="text" />
+                                    <input id="phone_number" name="phone_number" class="form-control" type="text" />
                                 </div>
                                 <br/>
                                 <div class="input-group">
                                     <span class="input-group-addon"><font color="red">*</font>身份证号</span>
-                                    <input name="person_id" class="form-control" type="text" />
+                                    <input id="person_id" name="person_id" class="form-control" type="text" />
                                 </div>
                                 <br/>
                                 <div class="input-group">
@@ -68,14 +68,14 @@
                                 <br/>
                                 <div class="input-group">
                                     <span class="input-group-addon"><font color="red">*</font>出生日期</span>
-                                    <input name="birthday" class="form-control" type="text" />
+                                    <input id="birthday" name="birthday" class="form-control" type="text" />
                                 </div>
                                 <br/>
                             </div>
                             <div class="col-xs-4 col-sm-4 col-xs-6">
                                 <div class="input-group">
                                     <span class="input-group-addon"> 国 籍</span>
-                                    <input name="nationality" class="form-control" type="text"/>
+                                    <input id="nationality" name="nationality" class="form-control" type="text"/>
                                 </div>
                                 <br/>
                                 <div class="input-group">
@@ -88,23 +88,23 @@
                                 <br/>
                                 <div class="input-group">
                                     <span class="input-group-addon"><font color="red">*</font>所属单位</span>
-                                    <input name="company" class="form-control" type="text" />
+                                    <input id="company" name="company" class="form-control" type="text" />
                                 </div>
                                 <br/>
                                 <div class="input-group">
                                     <span class="input-group-addon">外语能力</span>
-                                    <input name="foreign_language_ability" class="form-control" type="text" value=""/>
+                                    <input id="foreign_language_ability" name="foreign_language_ability" class="form-control" type="text" value=""/>
                                 </div>
                                 <br/>
                                 <div class="input-group">
                                     <span class="input-group-addon"> 学 历</span>
-                                    <input name="education" class="form-control" type="text" value=""/>
+                                    <input  id="education" name="education" class="form-control" type="text" value=""/>
                                 </div>
                                 <br/>
                             </div>
                             <div class="col-xs-4 col-sm-4 col-xs-6 ">
                                 <div class="fileinput fileinput-new" data-provides="fileinput" id="uploadImgDiv" align="center">
-                                    <input type="file" name="photo" id="driverPhoto">
+                                    <input type="file" name="photo" id="photo">
                                 </div>
                           </div>
                         </div>

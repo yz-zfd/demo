@@ -38,7 +38,7 @@ public class DriverManageUtil {
             }else{
                 //保存图片到本地
                 String fileName = UUID.randomUUID().toString() + "." + FilenameUtils.getExtension(item.getName());
-                String path=request.getSession().getServletContext().getRealPath("/img/")+fileName;
+                String path=request.getSession().getServletContext().getRealPath("/driverImg/")+fileName;
                 item.write(new File(path));
                 map.put(item.getFieldName(),path);
             }

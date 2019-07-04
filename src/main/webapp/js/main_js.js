@@ -1,6 +1,7 @@
 var $queryURL="/getAllDriver?t="+Math.random();
 var $columns=[
     {checkbox:true,visible:true},
+    {field:"id",visible: false},
     {field:"name",title:"姓名",sortable:true},
     {field:"nationality",title:"国籍"},
     {field:"phone_number",title:"号码"},
@@ -9,6 +10,7 @@ var $columns=[
     {field:"company",title:"所属公司"},
     {field:"sex",title:"性别",sortable:true},
     {field:"foreign_language_ability",title:"外语能力"},
+    //前端日期需更改格式
     {field:"birthday",title:"生日",sortable:true},
     {field:"education",title:"教育程度"},
     {field:"photo",title:"图片"},
@@ -34,13 +36,21 @@ $(function () {
             strictSearch:false,
             showCloumns:true,
             showRefresh:true,
-            clickToSelect:true,
+            clickToSelect:false,
 
             unniqueId:"id",
             showToggle:true,
             columns:$columns,
 
             toolbar:"#toolbar",
+            onClickCell:function (field,value,row,$element) {
+                if(field=="name"){
+                    setDiverDetails(row);
+                    $("#registerModal").attr("readonly","readonly");
+                    $("#registerButton").click();
+                }
+            }
+           
         }
     );
     $("#driverPhoto").fileinput({
@@ -57,7 +67,18 @@ $(function () {
         browseClass:"btn btn-primary",//按钮样式
     })
 })
-
+function setDiverDetails(row) {
+    console.debug(row.valueOf().birthday);
+    $("#name")[0].value=row.valueOf().name;
+    $("#phone_number")[0].value=row.valueOf().phone_number;
+    $("#person_id")[0].value=row.valueOf().person_id;
+    /*$("#birthday")[0].value=row.valueOf().birthday;*/
+    $("#nationality")[0].value=row.valueOf().nationality;
+    $("#company")[0].value=row.valueOf().company;
+    $("#foreign_language_ability")[0].value=row.valueOf().foreign_language_ability;
+    $("#education")[0].value=row.valueOf().education;
+    /*$("#photo")[0].value=row.valueOf().photo;*/
+}
 function submitRegisterInfoByAjax() {
     var form=new FormData($("#driverInfoForm")[0]);
     $.ajax({

@@ -1,9 +1,11 @@
 package com.example.demo.domain;
 
 import javax.persistence.*;
-import java.sql.DatabaseMetaData;
 import java.sql.Date;
 
+/**
+ * @author zfd
+ */
 @Entity
 @Table(name="driver_information")
 public class DriverInformation {
