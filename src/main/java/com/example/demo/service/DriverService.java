@@ -30,13 +30,30 @@ public class DriverService {
      * @param request
      * @return i
      */
-    public int addDrivers(HttpServletRequest request){
+    public int operateDriver(HttpServletRequest request){
         Map<String,Object> map=new HashMap<>();
         DriverInformation driver = new DriverInformation();
         try {
             DriverManageUtil.parseFileFormUtil(map,request);
             BeanUtils.populate(driver,map);
-            System.out.println(driver);
+            if(driver.getId()!=0 && driver.getId()!=null){
+                //id为0，为注册
+            }else{
+                //id为1，为更新
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return -1;
+        }
+        return 0;
+    }
+    //修改驾驶员信息
+    public int updateDrivers(HttpServletRequest request){
+        Map<String,Object> map=new HashMap<>();
+        DriverInformation driver = new DriverInformation();
+        try {
+            DriverManageUtil.parseFileFormUtil(map,request);
+            BeanUtils.populate(driver,map);
         } catch (Exception e) {
             e.printStackTrace();
             return -1;

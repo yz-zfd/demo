@@ -1,5 +1,7 @@
 package com.example.demo.domain;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import javax.persistence.*;
 import java.sql.Date;
 
@@ -28,6 +30,7 @@ public class DriverInformation {
     private String sex;
     @Column
     private String foreign_language_ability;
+    @JsonFormat(pattern = "yyyy-MM-dd")
     @Column
     private Date birthday;
     @Column

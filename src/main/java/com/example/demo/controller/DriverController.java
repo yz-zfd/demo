@@ -31,10 +31,13 @@ public class DriverController {
     public String index(){
         return "/view/main";
     }
-    @RequestMapping(value="/registerDriver",method = RequestMethod.POST)
+
+    //驾驶员注册
+    @RequestMapping(value="/operateDriver",method = RequestMethod.POST)
     @ResponseBody
-    public boolean registerDriver(HttpServletRequest req){
-        driverService.addDrivers(req);
+    public boolean operateDriver(HttpServletRequest req){
+        driverService.operateDriver(req);
         return true;
     }
+
 }

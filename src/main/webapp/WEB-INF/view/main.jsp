@@ -11,23 +11,45 @@
 <head>
     <meta charset="UTF-8">
     <title></title>
-    <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
-    <script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
-    <script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
-    <link rel="stylesheet" href="../../css/bootstrap-table.css"/>
-    <link rel="stylesheet" href="../../css/bootstrap-fileinput.min.css">
+    <link rel="stylesheet" href="../../css/bootstrap.min.css">
+    <script src="../../js/jquery.min.js"></script>
+    <script src="../../js/bootstrap.min.js"></script>
     <script src="../../js/main_js.js"></script>
+    <link rel="stylesheet" href="../../css/bootstrap-table.css"/>
     <script src="../../js/bootstrap-table.js"></script>
     <script src="../../js/bootstrap-table-zh-CN.js"></script>
+    <link rel="stylesheet" href="../../css/bootstrap-fileinput.min.css">
     <script src="../../js/bootstrap-fileinput.min.js"></script>
     <script src="../../js/bootstrap-fileinput.zh.js"></script>
 </head>
 <body>
 <div class="container">
     <div id="toolbar">
-        <button id="registerButton" class="btn btn-primary" data-toggle="modal" data-target="#registerModal">注册</button>
-        <button class="btn btn-primary">编辑</button>
+        <button id="registerButton" class="btn btn-primary" data-toggle="modal" data-target="#registerModal" onclick="alertModelByRegister()">注册</button>
+        <button class="btn btn-primary" onclick="alertModelByEdit()">编辑</button>
     </div>
+    <%--  用于展示提示信息的模态框  --%>
+    <div class="modal fade" id="messageModal" tabindex="-1" role="dialog" aria-labelledby="registerLabel" aria-hidden="true">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                        &times;
+                    </button>
+                    <h4 class="modal-title" >
+                        提示
+                    </h4>
+                </div>
+                <div class="modal-body" id="messageBody">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">我知道了！
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <%-- 用注册、编辑、展示驾驶员信息的模态框！--%>
     <div class="modal fade" id="registerModal" tabindex="-1" role="dialog" aria-labelledby="registerLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
@@ -35,12 +57,14 @@
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
                         &times;
                     </button>
-                  <h4 class="modal-title" id="myModalLabel">
-                        注册新用户!!!
+                  <h4 id="actionType" class="modal-title" >
+                      注册新用户！
                   </h4>
                 </div>
                 <div class="modal-body">
                     <form id="driverInfoForm" class="bs-example bs-example-form" role="form" method="post" enctype="multipart/form-data">
+                        <%--设置一个隐藏id框，用于判断是注册还是编辑--%>
+                        <input id="driverId" type="hidden" name="id">
                         <div class="row">
                             <div class="col-xs-4 col-sm-4 col-xs-6">
                                 <div class="input-group">
@@ -60,7 +84,7 @@
                                 <br/>
                                 <div class="input-group">
                                     <span class="input-group-addon"><font color="red">*</font> 性 别</span>
-                                    <select class="form-control" name="sex">
+                                    <select id="sex" class="form-control" name="sex">
                                         <option>男</option>
                                         <option>女</option>
                                     </select>
@@ -80,7 +104,7 @@
                                 <br/>
                                 <div class="input-group">
                                     <span class="input-group-addon"><font color="red">*</font>婚姻状态</span>
-                                    <select class="form-control" name="marital_status">
+                                    <select id="marital_status" class="form-control" name="marital_status">
                                         <option>未婚</option>
                                         <option>已婚</option>
                                     </select>
@@ -113,13 +137,14 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">关闭
                     </button>
-                    <button type="button" class="btn btn-primary" onclick="submitRegisterInfoByAjax()">
+                    <button id="submitChangeButton" type="button" class="btn btn-primary" onclick="submitRegisterInfoByAjax()">
                         提交更改
                     </button>
                 </div>
             </div><!-- /.modal-content -->
         </div><!-- /.modal -->
     </div>
+    <%-- 操作结果的模态框  --%>
     <div class="modal fade" id="resultModal" tabindex="-1" role="dialog" aria-labelledby="registerLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
@@ -128,7 +153,7 @@
                         &times;
                     </button>
                     <h4 class="modal-title" id="myModalLabel">
-                        注册结果！！！
+                        操作结果！！！
                     </h4>
                 </div>
                 <div class="modal-body" id="resultText">
