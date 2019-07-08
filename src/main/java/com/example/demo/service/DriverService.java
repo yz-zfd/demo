@@ -56,10 +56,25 @@ public class DriverService {
         Optional<DriverInformation> driverInformation=driverRepository.findById(id);
         return driverInformation.get();
     }
-    //验证身份证号
-    public boolean personIdCheck(Integer person_id){
-        if((driverRepository.findByPerson_id(person_id)) != null)
-            return false;
+
+    /**
+     *
+     * @param person_id
+     * @param id
+     * @return
+     * 首先通过id查询该id的person_id是否与修改后的id相同，
+     * 若相同则不作判断，不同则证明更改了身份证号，
+     * 需判断是否与其他的person_id相同
+     */
+    public boolean personIdCheck(String person_id,Integer id){
+        Optional<DriverInformation> optional = driverRepository.findById(id);
+        DriverInformation driverInformation = optional.get();
+        if(!person_id.equals(driverInformation.getPerson_id())){
+            if((driverRepository.findByPerson_id(person_id)) != null){
+                return false;
+            }
+            return true;
+        }
         return true;
     }
 }

@@ -47,16 +47,9 @@ $(function () {
             columns:$columns,
 
             toolbar:"#toolbar",
-           /* onClickCell:function (field,value,row,$element) {
-                if(field=="name"){
-                    console.debug(row);
-                    alertModelByDetails(row);
-                }
-            }*/
-           getSelection:function (row) {
+            getSelection:function (row) {
                return row;
-           }
-
+            }
         }
     );
     $("#photo").fileinput({
@@ -74,47 +67,42 @@ $(function () {
     })
 })
 //回调函数，用于检验数据的正确性
-var checkStatus = true;
-$(function () {
-    $("#driverInfoForm input").change(function () {
-        checkStatus = true;
-        if("name" == this.name && !(/^[\xa0-\xff]{2,4}$/.test(this.value))){
-            $("#messageBody")[0].innerText="请输入正确的姓名！"
-            checkStatus = false;
-        }
-        if("phone_number" == (this.name) && !(/^1[3456789]\d{9}$/.test(this.value))){
-            $("#messageBody")[0].innerText="电话号码不正确，请重新输入"
-            checkStatus = false;
-        }
-        if("person_id" == (this.name)){
-            if(!(/^[1-9]\d{7}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])\d{3}$|^[1-9]\d{5}[1-9]\d{3}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])\d{3}([0-9]|X)$/.test(this.value))){
-                $("#messageBody")[0].innerText="身份证号不合法！"
-                checkStatus = false;
-            }else {
-                $.ajax({
-                    url:"/personIdCheck",
-                    dataType:"json",
-                    data: {"person_id":this.value},
-                    type:"get",
-                    success:function (data) {
-                        if(data==false){
-                            $("#messageBody")[0].innerText="身份证号已经存在！";
-                            checkStatus = false;
-                        }
-                    },
-                    error:function () {
-                        console.debug("sss");
-                    },
-                })
-            }
-        }
-        if(!checkStatus){
-            $("#messageModal").modal("show");
-        }else{
-            $("#submitChangeButton")[0].disabled="";
-        }
-    })
-})
+function checkInfo() {
+    var status=true;
+    $("#messageBody")[0].innerText = ""
+    if (!(/^[\u4e00-\u9fa5]{2,4}$/.test($("#name")[0].value))) {
+        $("#messageBody")[0].innerText = "请输入正确的姓名！"
+        status=false;
+    }
+    if (!(/^1[3456789]\d{9}$/.test($("#phone_number")[0].value))) {
+        $("#messageBody")[0].innerText = "电话号码不正确，请重新输入"
+        status=false;
+    }
+    if($("#company")[0].value == null || "" == $("#company")[0].value == null){
+        $("#messageBody")[0].innerText = "单位不能为空";
+        status=false;
+    }
+    if (!(/^[1-9]\d{7}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])\d{3}$|^[1-9]\d{5}[1-9]\d{3}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])\d{3}([0-9]|X)$/.test($("#person_id")[0].value))) {
+        $("#messageBody")[0].innerText = "身份证号不合法！"
+        status=false;
+    }
+    if (true) {
+        $.ajax({
+            url: "/personIdCheck",
+            dataType: "json",
+            async:false,
+            data: {"person_id":$("#person_id")[0].value,"id":$("#id")[0].value},
+            type: "get",
+            success: function (data) {
+                if (data == false) {
+                    $("#messageBody")[0].innerText = "身份证号已经存在！";
+                    status=false;
+                }
+            },
+        })
+    }
+    return status;
+}
 //编辑时回显数据
 function setDiverDetails(row) {
     $("#name")[0].value=row.valueOf().name;
@@ -131,15 +119,12 @@ function setDiverDetails(row) {
     //$("#photo")[0].value=row.valueOf().photo;
 }
 function alertModelByRegister(){
-
     //设置注册独有的模态框属性
-    $("#submitChangeButton")[0].disabled="disabled";
+    $("#actionType")[0].innerText="注册新用户！！！";
+    $("#registerModal input").val("");
     $("#driverInfoForm").find("input").attr("disabled",false);
     $("#driverInfoForm").find("select").attr("disabled",false);
-    $("#actionType")[0].innerText="注册新用户！！！";
-    $("#idContainerDiv")[0].innerHTML="";
-    $("#registerModal input").val("");
-    $("#idContainerDiv")[0].innerHTML="";
+    $("#submitChangeButton")[0].disabled="";
 }
 function alertModelByEdit(){
     var row=$("#table1").bootstrapTable("getSelections",function (row) {
@@ -153,13 +138,12 @@ function alertModelByEdit(){
         $("#messageModal").modal("show");
         return;
     }
-
     //设置独有的模态框属性
-    $("#submitChangeButton")[0].disabled="disabled";
+    $("#actionType")[0].innerText="编辑用户！！！"
+    $("#id")[0].value=row[0].valueOf().id
     $("#driverInfoForm").find("input").attr("disabled",false);
     $("#driverInfoForm").find("select").attr("disabled",false);
-    $("#actionType")[0].innerText="编辑用户！！！"
-    $("#idContainerDiv")[0].innerHTML="<input name='id' value='"+row[0].valueOf().id+"'>"
+    $("#submitChangeButton")[0].disabled="";
     setDiverDetails(row[0]);
     $("#registerModal").modal("show");
 }
@@ -209,30 +193,33 @@ function alertModelByDetails(row){
 }
 //注册或编辑ajax提交
 function submitRegisterInfoByAjax() {
-    var form=new FormData($("#driverInfoForm")[0]);
-    $.ajax({
-        url:"/operateDriver",
-        type:"post",
-        data:form,
-        processData:false,
-        contentType:false,
-        success:function (data) {
-            if(data == true){
-                $("#resultText")[0].innerText="操作成功！！！";
+    if(!checkInfo()){
+        $("#messageModal").modal("show");
+    }else{
+        var form=new FormData($("#driverInfoForm")[0]);
+        $.ajax({
+            url:"/operateDriver",
+            type:"post",
+            data:form,
+            processData:false,
+            contentType:false,
+            success:function (data) {
+                if(data == true){
+                    $("#resultText")[0].innerText="操作成功！！！";
+                    $("#registerModal").modal("hide");
+                    $("#resultModal").modal("show");
+                }else{
+                    $("#resultText")[0].innerText="操作失败请重试！！！";
+                    $("#resultModal").modal("show");
+                }
+            },
+            error:function (result) {
+                $("#resultText")[0].innerText="系统错误，请稍后再试！！！";
                 $("#registerModal").modal("hide");
                 $("#resultModal").modal("show");
-            }else{
-                $("#resultText")[0].innerText="操作失败请重试！！！";
-                $("#resultModal").modal("show");
             }
-        },
-        error:function (result) {
-            $("#resultText")[0].innerText="系统错误，请稍后再试！！！";
-            $("#registerModal").modal("hide");
-            $("#resultModal").modal("show");
-        }
-    })
-
-
+        })
+        $("#registerModal").modal("hide");
+    }
 }
 

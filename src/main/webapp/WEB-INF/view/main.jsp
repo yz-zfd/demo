@@ -43,7 +43,7 @@
                 <div class="modal-body">
                     <form id="driverInfoForm" class="bs-example bs-example-form" role="form" method="post" enctype="multipart/form-data">
                         <%--设置一个隐藏id框，用于判断是注册还是编辑--%>
-                        <div style="display: none" id="idContainerDiv"></div>
+                        <input style="display: none" id="id" name="id"/>
                         <div class="row">
                             <div class="col-xs-4 col-sm-4 col-xs-6">
                                 <div class="input-group">

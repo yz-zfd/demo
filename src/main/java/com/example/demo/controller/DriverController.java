@@ -51,7 +51,8 @@ public class DriverController {
     //验证身份证号是否重复
     @RequestMapping("/personIdCheck")
     @ResponseBody
-    public boolean personIdCheck(Integer person_id){
-        return driverService.personIdCheck(person_id);
+    public boolean personIdCheck(String person_id,Integer id){
+        boolean b = driverService.personIdCheck(person_id, id);
+        return b;
     }
 }

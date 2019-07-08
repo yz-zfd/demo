@@ -34,5 +34,5 @@ public interface DriverRepository extends JpaRepository <DriverInformation,Integ
     @Cacheable(key="'Driver'+#id")
     Optional<DriverInformation> findById(Integer id);
     @Query("select d from DriverInformation d where person_id=:person_id")
-    public DriverInformation findByPerson_id(Integer person_id);
+    public DriverInformation findByPerson_id(String person_id);
 }
