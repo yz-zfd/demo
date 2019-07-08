@@ -1,20 +1,16 @@
 package com.example.demo;
 
-import com.example.demo.dao.DriverDao;
+import com.example.demo.dao.DriverRepository;
 import com.example.demo.domain.DriverInformation;
 import com.example.demo.service.DriverService;
-import org.assertj.core.data.Percentage;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
-import java.sql.*;
+import java.sql.Date;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 @RunWith(SpringRunner.class)
@@ -23,11 +19,11 @@ public class DemoApplicationTests {
     @Autowired
     DriverService driverService;
     @Autowired
-    DriverDao driverDao;
+    DriverRepository driverRepository;
 
     @Test
     public void getAll(){
-        List<DriverInformation> list = driverDao.find();
+        List<DriverInformation> list = driverRepository.find();
         for(DriverInformation d:list){
             System.out.println(d);
         }
@@ -46,7 +42,7 @@ public class DemoApplicationTests {
             list.add(new DriverInformation("张山"+i,"中国","13508253588",false,"513022XXXXXXXXX","yz","男","good",date,"本科","c:\\"));
             i++;
         }
-        driverDao.saveAll(list);
+        driverRepository.saveAll(list);
     }
    /* @Test
     public void connect() throws Exception{

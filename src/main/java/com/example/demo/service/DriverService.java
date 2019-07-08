@@ -1,27 +1,34 @@
 package com.example.demo.service;
 
-import com.example.demo.dao.DriverDao;
+import com.example.demo.dao.DriverRepository;
 import com.example.demo.domain.DriverInformation;
 import com.example.demo.util.DriverManageUtil;
 import org.apache.commons.beanutils.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * @author zfd
  *
  */
 @Service
+
 public class DriverService {
     @Autowired
-    DriverDao driverDao;
+    private DriverRepository driverRepository;
+
     public List<DriverInformation> queryDrivers(){
-        List<DriverInformation> list = driverDao.find();
+        List<DriverInformation> list = driverRepository.find();
         return list;
     }
 
@@ -30,35 +37,30 @@ public class DriverService {
      * @param request
      * @return i
      */
-    public int operateDriver(HttpServletRequest request){
+    @Transactional
+    public boolean operateDriver(HttpServletRequest request){
         Map<String,Object> map=new HashMap<>();
         DriverInformation driver = new DriverInformation();
         try {
             DriverManageUtil.parseFileFormUtil(map,request);
             BeanUtils.populate(driver,map);
-            if(driver.getId()!=0 && driver.getId()!=null){
-                //id为0，为注册
-            }else{
-                //id为1，为更新
-            }
+            driverRepository.save(driver);
         } catch (Exception e) {
             e.printStackTrace();
-            return -1;
+            return false;
         }
-        return 0;
+        return true;
     }
-    //修改驾驶员信息
-    public int updateDrivers(HttpServletRequest request){
-        Map<String,Object> map=new HashMap<>();
-        DriverInformation driver = new DriverInformation();
-        try {
-            DriverManageUtil.parseFileFormUtil(map,request);
-            BeanUtils.populate(driver,map);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return -1;
-        }
-        return 0;
+    //查询一个司机
+    public DriverInformation queryOneDriver(Integer id){
+        Optional<DriverInformation> driverInformation=driverRepository.findById(id);
+        return driverInformation.get();
+    }
+    //验证身份证号
+    public boolean personIdCheck(Integer person_id){
+        if((driverRepository.findByPerson_id(person_id)) != null)
+            return false;
+        return true;
     }
 }
 

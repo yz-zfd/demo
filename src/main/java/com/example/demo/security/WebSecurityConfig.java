@@ -1,6 +1,6 @@
-package com.example.demo.service;
+package com.example.demo.security;
 
-import com.example.demo.dao.UserDao;
+import com.example.demo.dao.UserRepository;
 import com.example.demo.domain.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,7 +18,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 
 import javax.servlet.ServletException;
@@ -84,15 +83,18 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         };
     }
 
+    @Override
     @Bean
     public UserDetailsService userDetailsService() {    //用户登录实现
         return new UserDetailsService() {
             @Autowired
-            private UserDao userDao;
+            private UserRepository userDao;
             @Override
             public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
                 User user = userDao.findByUsername(s);
-                if (user == null) throw new UsernameNotFoundException("Username " + s + " not found");
+                if (user == null) {
+                    throw new UsernameNotFoundException("Username " + s + " not found");
+                }
                 return new SecurityUser(user);
             }
         };

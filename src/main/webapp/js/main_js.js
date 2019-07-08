@@ -73,6 +73,49 @@ $(function () {
         browseClass:"btn btn-primary",//按钮样式
     })
 })
+//回调函数，用于检验数据的正确性
+var checkStatus = true;
+$(function () {
+    $("#driverInfoForm input").change(function () {
+        checkStatus = true;
+        if("name" == this.name && !(/^[\xa0-\xff]{2,4}$/.test(this.value))){
+            $("#messageBody")[0].innerText="请输入正确的姓名！"
+            checkStatus = false;
+        }
+        if("phone_number" == (this.name) && !(/^1[3456789]\d{9}$/.test(this.value))){
+            $("#messageBody")[0].innerText="电话号码不正确，请重新输入"
+            checkStatus = false;
+        }
+        if("person_id" == (this.name)){
+            if(!(/^[1-9]\d{7}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])\d{3}$|^[1-9]\d{5}[1-9]\d{3}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])\d{3}([0-9]|X)$/.test(this.value))){
+                $("#messageBody")[0].innerText="身份证号不合法！"
+                checkStatus = false;
+            }else {
+                $.ajax({
+                    url:"/personIdCheck",
+                    dataType:"json",
+                    data: {"person_id":this.value},
+                    type:"get",
+                    success:function (data) {
+                        if(data==false){
+                            $("#messageBody")[0].innerText="身份证号已经存在！";
+                            checkStatus = false;
+                        }
+                    },
+                    error:function () {
+                        console.debug("sss");
+                    },
+                })
+            }
+        }
+        if(!checkStatus){
+            $("#messageModal").modal("show");
+        }else{
+            $("#submitChangeButton")[0].disabled="";
+        }
+    })
+})
+//编辑时回显数据
 function setDiverDetails(row) {
     $("#name")[0].value=row.valueOf().name;
     $("#phone_number")[0].value=row.valueOf().phone_number;
@@ -85,12 +128,18 @@ function setDiverDetails(row) {
     var status=row.valueOf().marital_status==true ? "已婚":"未婚"
     $("#marital_status").val(status);
     $("#sex").val(row.valueOf().sex);
-    // $("#photo")[0].value=row.valueOf().photo;
+    //$("#photo")[0].value=row.valueOf().photo;
 }
 function alertModelByRegister(){
-    $("#actionType")[0].innerText="注册新用户！！！"
-    $("#submitChangeButton")[0].disabled="";
+
+    //设置注册独有的模态框属性
+    $("#submitChangeButton")[0].disabled="disabled";
+    $("#driverInfoForm").find("input").attr("disabled",false);
+    $("#driverInfoForm").find("select").attr("disabled",false);
+    $("#actionType")[0].innerText="注册新用户！！！";
+    $("#idContainerDiv")[0].innerHTML="";
     $("#registerModal input").val("");
+    $("#idContainerDiv")[0].innerHTML="";
 }
 function alertModelByEdit(){
     var row=$("#table1").bootstrapTable("getSelections",function (row) {
@@ -104,18 +153,61 @@ function alertModelByEdit(){
         $("#messageModal").modal("show");
         return;
     }
+
+    //设置独有的模态框属性
+    $("#submitChangeButton")[0].disabled="disabled";
+    $("#driverInfoForm").find("input").attr("disabled",false);
+    $("#driverInfoForm").find("select").attr("disabled",false);
     $("#actionType")[0].innerText="编辑用户！！！"
-    $("#submitChangeButton")[0].disabled="";
-    $("#driverId")[0].value=row[0].valueOf().id;
+    $("#idContainerDiv")[0].innerHTML="<input name='id' value='"+row[0].valueOf().id+"'>"
     setDiverDetails(row[0]);
     $("#registerModal").modal("show");
 }
-function alertModelByDetails(row) {
+/**
+ * 这是从前台直接拿数据的方法
+ */
+/*function alertModelByDetails(row) {
     setDiverDetails(row);
     $("#actionType")[0].innerText="详情(只读)"
     $("#submitChangeButton")[0].disabled="disabled";
     $("#registerModal").modal("show");
+}*/
+//详情操作重新请求后台数据
+function getDetailsByAjax(id){
+    $.ajax({
+        url:"/getDriverDetails",
+        dataType:"json",
+        data: {"id":id},
+        type:"get",
+        success:function (data) {
+            var driver=data;
+            $("#name")[0].value=driver.name;
+            $("#phone_number")[0].value=driver.phone_number;
+            $("#person_id")[0].value=driver.person_id;
+            $("#birthday")[0].value=driver.birthday;
+            $("#nationality")[0].value=driver.nationality;
+            $("#company")[0].value=driver.company;
+            $("#foreign_language_ability")[0].value=driver.foreign_language_ability;
+            $("#education")[0].value=driver.education;
+            var status=driver.marital_status==true ? "已婚":"未婚"
+            $("#marital_status").val(status);
+            $("#sex").val(driver.sex);
+            // $("#photo")[0].value=driver.photo;
+        },
+        error:function () {
+            console.debug("sss");
+        },
+    })
 }
+function alertModelByDetails(row){
+    getDetailsByAjax(row.valueOf().id);
+    $("#actionType")[0].innerText="详情(只读)"
+    $("#submitChangeButton")[0].disabled="disabled";
+    $("#driverInfoForm").find("input").attr("disabled",true);
+    $("#driverInfoForm").find("select").attr("disabled",true);
+    $("#registerModal").modal("show");
+}
+//注册或编辑ajax提交
 function submitRegisterInfoByAjax() {
     var form=new FormData($("#driverInfoForm")[0]);
     $.ajax({
@@ -124,19 +216,18 @@ function submitRegisterInfoByAjax() {
         data:form,
         processData:false,
         contentType:false,
-        success:function (result) {
-            if(result == "true"){
-
-                $("#resultText")[0].innerHTML="<h4>操作成功！！！</h4>";
+        success:function (data) {
+            if(data == true){
+                $("#resultText")[0].innerText="操作成功！！！";
                 $("#registerModal").modal("hide");
                 $("#resultModal").modal("show");
             }else{
-                $("#resultText")[0].innerHTML="<h4 style='color:blue'>操作失败请重试！！！</h4>";
+                $("#resultText")[0].innerText="操作失败请重试！！！";
                 $("#resultModal").modal("show");
             }
         },
         error:function (result) {
-            $("#resultText")[0].innerHTML="<h4 style='color: red'>系统错误，请稍后再试！！！</h4>";
+            $("#resultText")[0].innerText="系统错误，请稍后再试！！！";
             $("#registerModal").modal("hide");
             $("#resultModal").modal("show");
         }
@@ -144,3 +235,4 @@ function submitRegisterInfoByAjax() {
 
 
 }
+

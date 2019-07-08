@@ -28,27 +28,6 @@
         <button id="registerButton" class="btn btn-primary" data-toggle="modal" data-target="#registerModal" onclick="alertModelByRegister()">注册</button>
         <button class="btn btn-primary" onclick="alertModelByEdit()">编辑</button>
     </div>
-    <%--  用于展示提示信息的模态框  --%>
-    <div class="modal fade" id="messageModal" tabindex="-1" role="dialog" aria-labelledby="registerLabel" aria-hidden="true">
-        <div class="modal-dialog modal-sm">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
-                        &times;
-                    </button>
-                    <h4 class="modal-title" >
-                        提示
-                    </h4>
-                </div>
-                <div class="modal-body" id="messageBody">
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">我知道了！
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
     <%-- 用注册、编辑、展示驾驶员信息的模态框！--%>
     <div class="modal fade" id="registerModal" tabindex="-1" role="dialog" aria-labelledby="registerLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
@@ -64,7 +43,7 @@
                 <div class="modal-body">
                     <form id="driverInfoForm" class="bs-example bs-example-form" role="form" method="post" enctype="multipart/form-data">
                         <%--设置一个隐藏id框，用于判断是注册还是编辑--%>
-                        <input id="driverId" type="hidden" name="id">
+                        <div style="display: none" id="idContainerDiv"></div>
                         <div class="row">
                             <div class="col-xs-4 col-sm-4 col-xs-6">
                                 <div class="input-group">
@@ -144,9 +123,30 @@
             </div><!-- /.modal-content -->
         </div><!-- /.modal -->
     </div>
+    <%--  用于展示提示信息的模态框  --%>
+    <div class="modal fade" id="messageModal" tabindex="-1" role="dialog" aria-labelledby="registerLabel" aria-hidden="true">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                        &times;
+                    </button>
+                    <h4 class="modal-title" >
+                        提示
+                    </h4>
+                </div>
+                <div class="modal-body" id="messageBody">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">我知道了！
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
     <%-- 操作结果的模态框  --%>
     <div class="modal fade" id="resultModal" tabindex="-1" role="dialog" aria-labelledby="registerLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
+        <div class="modal-dialog modal-sm">
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
@@ -156,8 +156,8 @@
                         操作结果！！！
                     </h4>
                 </div>
-                <div class="modal-body" id="resultText">
-
+                <div class="modal-body">
+                    <h3 id="resultText" style="color: red"></h3>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">确定

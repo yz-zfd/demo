@@ -13,6 +13,8 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.InvocationTargetException;
+import java.sql.Date;
+import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -34,10 +36,17 @@ public class DriverManageUtil {
         List<FileItem> list = fileUpload.parseRequest(request);
         for (FileItem item:list){
             if(item.isFormField()){
+                //需要将birthday的字符串转为日期格式
+                if("birthday".equals(item.getFieldName())){
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                    Long l = sdf.parse(item.getString("utf-8")).getTime();
+                    map.put(item.getFieldName(),new java.sql.Date(l));
+                    continue;
+                }
                 map.put(item.getFieldName(),item.getString("utf-8"));
             }else{
                 //保存图片到本地
-                String fileName = UUID.randomUUID().toString() + "." + FilenameUtils.getExtension(item.getName());
+                String fileName = UUID.randomUUID().toString() .concat(".") .concat(FilenameUtils.getExtension(item.getName()));
                 String path=request.getSession().getServletContext().getRealPath("/driverImg/")+fileName;
                 item.write(new File(path));
                 map.put(item.getFieldName(),path);

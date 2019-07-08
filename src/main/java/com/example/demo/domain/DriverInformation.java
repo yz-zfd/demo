@@ -3,6 +3,7 @@ package com.example.demo.domain;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.sql.Date;
 
 /**
@@ -10,7 +11,7 @@ import java.sql.Date;
  */
 @Entity
 @Table(name="driver_information")
-public class DriverInformation {
+public class DriverInformation implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
@@ -139,6 +140,21 @@ public class DriverInformation {
         this.foreign_language_ability = foreign_language_ability;
     }
 
+    public Boolean getMarital_status() {
+        return marital_status;
+    }
+
+    public void setMarital_status(Boolean marital_status) {
+        this.marital_status = marital_status;
+    }
+
+    public Date getBirthday() {
+        return birthday;
+    }
+
+    public void setBirthday(Date birthday) {
+        this.birthday = birthday;
+    }
 
     public String getEducation() {
         return education;

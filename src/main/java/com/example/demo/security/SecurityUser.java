@@ -1,8 +1,4 @@
-package com.example.demo.service;
-/**
- * @author zfd
- * @date 2019/07/03
- */
+package com.example.demo.security;
 
 import com.example.demo.domain.User;
 import org.springframework.security.core.GrantedAuthority;
@@ -12,9 +8,12 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.ArrayList;
 import java.util.Collection;
-
+/**
+ * @author zfd
+ * @date 2019/07/03
+ */
 public class SecurityUser extends User implements UserDetails {
-    private static final long serialVersionUID=1l;
+    private static final long serialVersionUID=1L;
     public SecurityUser(User user){
         if(user!=null){
             this.setUsername(user.getUsername());
