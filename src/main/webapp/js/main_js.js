@@ -62,7 +62,9 @@ $(function () {
           actionZoom: '',
           actionDelete: '',
         },
-        showBrowse:false,//不显示浏览按钮
+        dropZoneTitle: "图片规格：1寸照片 大小 295 x 413",
+
+        //showBrowse:false,//不显示浏览按钮
         showCaption:false,//是否显示标题
         showUpload:false,//显示上传按钮
         showRemove:false,
