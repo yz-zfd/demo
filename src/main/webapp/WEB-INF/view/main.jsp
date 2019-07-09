@@ -21,6 +21,10 @@
     <link rel="stylesheet" href="../../css/bootstrap-fileinput.min.css">
     <script src="../../js/bootstrap-fileinput.min.js"></script>
     <script src="../../js/bootstrap-fileinput.zh.js"></script>
+    <link rel="stylesheet" href="../../css/bootstrap-datetimepicker.min.css">
+    <script src="../../js/bootstrap-datetimepicker.min.js"></script>
+    <script src="../../js/bootstrap-datetimepicker.zh-CN.js"></script>
+
 </head>
 <body>
 <div class="container">

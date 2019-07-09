@@ -77,5 +77,12 @@ public class DriverService {
         }
         return true;
     }
+    //方法重载，注册的时候直接判断是否重复。
+    public boolean personIdCheck(String person_id){
+        if((driverRepository.findByPerson_id(person_id)) != null){
+            return false;
+        }
+        return true;
+    }
 }
 

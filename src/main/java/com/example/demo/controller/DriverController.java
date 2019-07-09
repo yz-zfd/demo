@@ -52,7 +52,13 @@ public class DriverController {
     @RequestMapping("/personIdCheck")
     @ResponseBody
     public boolean personIdCheck(String person_id,Integer id){
-        boolean b = driverService.personIdCheck(person_id, id);
+        //定义状态变量
+        boolean b;
+        if(id==null||id.toString()==""){
+            b=driverService.personIdCheck(person_id);
+        }else{
+            b = driverService.personIdCheck(person_id, id);
+        }
         return b;
     }
 }

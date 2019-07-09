@@ -66,27 +66,28 @@ $(function () {
         browseClass:"btn btn-primary",//按钮样式
     })
 })
-//回调函数，用于检验数据的正确性
+//用于检验数据的正确性
 function checkInfo() {
     var status=true;
     $("#messageBody")[0].innerText = ""
-    if (!(/^[\u4e00-\u9fa5]{2,4}$/.test($("#name")[0].value))) {
+    if (status && !(/^[\u4e00-\u9fa5]{2,4}$/.test($("#name")[0].value))) {
         $("#messageBody")[0].innerText = "请输入正确的姓名！"
         status=false;
     }
-    if (!(/^1[3456789]\d{9}$/.test($("#phone_number")[0].value))) {
+    if (status && !(/^1[3456789]\d{9}$/.test($("#phone_number")[0].value))) {
         $("#messageBody")[0].innerText = "电话号码不正确，请重新输入"
         status=false;
     }
-    if($("#company")[0].value == null || "" == $("#company")[0].value == null){
+    if(status && ($("#company")[0].value == "")){
+        console.debug($("#company")[0].value)
         $("#messageBody")[0].innerText = "单位不能为空";
         status=false;
     }
-    if (!(/^[1-9]\d{7}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])\d{3}$|^[1-9]\d{5}[1-9]\d{3}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])\d{3}([0-9]|X)$/.test($("#person_id")[0].value))) {
+    if (status && !(/^[1-9]\d{7}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])\d{3}$|^[1-9]\d{5}[1-9]\d{3}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])\d{3}([0-9]|X)$/.test($("#person_id")[0].value))) {
         $("#messageBody")[0].innerText = "身份证号不合法！"
         status=false;
     }
-    if (true) {
+    if (status) {
         $.ajax({
             url: "/personIdCheck",
             dataType: "json",
@@ -100,6 +101,10 @@ function checkInfo() {
                 }
             },
         })
+    }
+    if(status && $("#birthday")[0].value==""){
+        $("#messageBody")[0].innerText = "请选择日期！";
+        status=false;
     }
     return status;
 }
@@ -222,4 +227,12 @@ function submitRegisterInfoByAjax() {
         $("#registerModal").modal("hide");
     }
 }
-
+//日期控件
+$(function () {
+    $("#birthday").datetimepicker({
+        minView:"month",
+        language:"zh-CN",
+        format:"yyyy-mm-dd",
+        setData:new Date(),
+    });
+})
