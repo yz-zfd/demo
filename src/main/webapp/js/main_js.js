@@ -54,8 +54,15 @@ $(function () {
     );
     $("#photo").fileinput({
         language:"zh",
-        uploadUrl: "/driverImg",//上传路径
+        // uploadUrl: "/driverImg",//上传路径
         addlwedFileExtensions:["jpg","png","gif"],
+        maxFileCount:1,
+        layoutTemplates:{
+          actionUpload: '',
+          actionZoom: '',
+          actionDelete: '',
+        },
+        showBrowse:false,//不显示浏览按钮
         showCaption:false,//是否显示标题
         showUpload:false,//显示上传按钮
         showRemove:false,
