@@ -18,37 +18,49 @@ public class User {
     @Column
     private String password;
     @Column
-    private Integer DriverInfoId;
+    private Integer driverInfoId;
 
+    @Column
+    private String role;
+
+    public Integer getId() {
+        return id;
+    }
+    public void setId(Integer id) {
+        this.id = id;
+    }
     public String getUsername() {
         return username;
     }
-
     public void setUsername(String username) {
         this.username = username;
     }
-
     public String getPassword() {
         return password;
     }
-
     public void setPassword(String password) {
         this.password = password;
     }
-
     public Integer getDriverInfoId() {
-        return DriverInfoId;
+        return driverInfoId;
     }
-
     public void setDriverInfoId(Integer driverInfoId) {
-        DriverInfoId = driverInfoId;
+        this.driverInfoId = driverInfoId;
+    }
+    public String getRole() {
+        return role;
+    }
+    public void setRole(String role) {
+        this.role = role;
     }
     @Override
     public String toString() {
         return "User{" +
-                "username='" + username + '\'' +
+                "id=" + id +
+                ", username='" + username + '\'' +
                 ", password='" + password + '\'' +
-                ", DriverInfoId=" + DriverInfoId +
+                ", driverInfoId=" + driverInfoId +
+                ", role='" + role + '\'' +
                 '}';
     }
 }

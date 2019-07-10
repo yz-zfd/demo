@@ -61,4 +61,9 @@ public class DriverController {
         }
         return b;
     }
+    //test
+    @RequestMapping("/user")
+    public void user(){
+        System.out.println("user");
+    }
 }

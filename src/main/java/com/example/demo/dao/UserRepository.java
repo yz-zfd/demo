@@ -22,5 +22,6 @@ public interface UserRepository extends JpaRepository <User,Integer>{
     /**
      * 查询一个用户
      */
+    @Query("select d from User d where username=:username")
     User findByUsername(String username);
 }
