@@ -8,16 +8,17 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Set;
 
 /**
  * @author zfd
- * @date 2019/07/03
+ * 2019/07/03
  */
 public class SecurityUser extends User implements UserDetails {
     private static final long serialVersionUID=1L;
-    private  final Set<GrantedAuthority> authorities;
-    public SecurityUser(User user,Set<GrantedAuthority> authorities){
+    private  final List<String> authorities;
+    public SecurityUser(User user,List<String> authorities){
         this.authorities=authorities;
         this.setUsername(user.getUsername());
         this.setPassword(new BCryptPasswordEncoder().encode(user.getPassword()));
@@ -26,13 +27,13 @@ public class SecurityUser extends User implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        Collection<GrantedAuthority> authorities = new ArrayList<>();
-        String username = this.getUsername();
-        if (username != null) {
-            SimpleGrantedAuthority authority = new SimpleGrantedAuthority(username);
-            authorities.add(authority);
+        Collection<GrantedAuthority> authoritieList = new ArrayList<>();
+        //遍历该用户所有可访问的url，将他们封装为GrantedAuthority
+        for(String auth:authorities){
+            authoritieList.add(new SimpleGrantedAuthority(auth));
         }
-        return authorities;
+
+        return authoritieList;
     }
     /**
      *账户是否过期，过期无法验证

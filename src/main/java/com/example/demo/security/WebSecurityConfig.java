@@ -1,5 +1,6 @@
 package com.example.demo.security;
 
+import com.example.demo.dao.AuthorityRepository;
 import com.example.demo.dao.UserRepository;
 import com.example.demo.domain.User;
 import org.slf4j.Logger;
@@ -124,21 +125,18 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     public UserDetailsService userDetailsService() {    //用户登录实现
         return new UserDetailsService() {
             @Autowired
-            private UserRepository userDao;
+            private UserRepository userRepository;
+            private AuthorityRepository authorityRepository;
             @Override
             public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
-                User user = userDao.findByUsername(s);
-                BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+                User user = userRepository.findByUsername(s);
                 if (user == null) {
                     throw new UsernameNotFoundException("Username " + s + " not found");
                 }
-                if("ADMIN".equals(user.getRole())){
-                    return new org.springframework.security.core.userdetails.User(user.getUsername(),encoder.encode(user.getPassword()),AuthorityUtils.createAuthorityList("ROLE_ADMIN"));
-                }
-                if("USER".equals(user.getRole())){
-                    return new org.springframework.security.core.userdetails.User(user.getUsername(),encoder.encode(user.getPassword()),AuthorityUtils.createAuthorityList("ROLE_USER"));
-                }
-                return new org.springframework.security.core.userdetails.User(user.getUsername(),encoder.encode(user.getPassword()),AuthorityUtils.createAuthorityList("ROLE_a"));
+                return new SecurityUser(user,getAuthoritys(user));
+            }
+            private List<String> getAuthoritys(User user){
+                return authorityRepository.findRolesOfUserByUsername(user.getUsername());
             }
         };
     }

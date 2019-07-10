@@ -24,7 +24,7 @@ public interface DriverRepository extends JpaRepository <DriverInformation,Integ
      */
     /*@Cacheable(key="'drivers'")*/
     @Query("select d from DriverInformation d")
-    public List<DriverInformation> find();
+     List<DriverInformation> find();
 
     @Override
     @CachePut(key="'Driver'+#s.id")
@@ -33,6 +33,7 @@ public interface DriverRepository extends JpaRepository <DriverInformation,Integ
     @Override
     @Cacheable(key="'Driver'+#id")
     Optional<DriverInformation> findById(Integer id);
+
     @Query("select d from DriverInformation d where person_id=:person_id")
-    public DriverInformation findByPerson_id(String person_id);
+     DriverInformation findByPerson_id(String person_id);
 }
