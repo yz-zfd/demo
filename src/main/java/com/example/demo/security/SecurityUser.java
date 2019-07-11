@@ -30,7 +30,7 @@ public class SecurityUser extends User implements UserDetails {
         Collection<GrantedAuthority> authoritieList = new ArrayList<>();
         //遍历该用户所有可访问的url，将他们封装为GrantedAuthority
         for(String auth:authorities){
-            authoritieList.add(new SimpleGrantedAuthority(auth));
+            authoritieList.add(new MyGrantedAuthority(auth));
         }
 
         return authoritieList;

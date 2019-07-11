@@ -62,7 +62,7 @@ public class DriverService {
      * @param person_id
      * @param id
      * @return
-     * 首先通过id查询该id的person_id是否与修改后的id相同，
+     * 首先通过id查询该id的person_id是否与修改后的person_id相同，
      * 若相同则不作判断，不同则证明更改了身份证号，
      * 需判断是否与其他的person_id相同
      */

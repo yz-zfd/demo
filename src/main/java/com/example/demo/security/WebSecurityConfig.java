@@ -51,8 +51,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         security.csrf().disable();
         security.authorizeRequests().
                 antMatchers("/css/**","/img/**","/js/**").permitAll().
-                antMatchers("/operateDriver").hasRole("ADMIN").
-                antMatchers("/user").hasRole("USER").
+                /*antMatchers("/operateDriver").hasRole("ADMIN").
+                antMatchers("/user").hasRole("USER").*/
                 and().
                 formLogin().loginPage("/login").
                 successForwardUrl("/index").failureForwardUrl("/login").permitAll().

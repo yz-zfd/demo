@@ -9,22 +9,26 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface AuthorityRepository extends JpaRepository<RoleInfo,Integer> {
+public interface AuthorityRepository extends JpaRepository<UrlRole,Integer> {
     /**
-     * 三表连接查询某个用户对应得权限
+     * 查询某个用户对应的角色
      * @param username
      * @return
      */
-    @Query("select r.role from UserRole ur join User u on ur.user_id=u.id join RoleInfo r on ur.role_id=r.id where u.username=:username")
+    @Query("select UserRole.role from UserRole where UserRole.username=:username")
     List<String> findRolesOfUserByUsername(String username);
     /**
-     * 三表连接查询某个url需要的权限
-     * @param username
+     * 查询某个url需要的权限
+     * @param url
      * @return
      */
-    @Query("select r.role from UrlRole ur join UrlInfo ui on ur.url_id=ui.id join RoleInfo r on ur.role_id=r.id where ui.url=:url")
-    List<String> findRolesOfUrlByUrlname(String url);
+    @Query("select UrlRole.role from UrlRole where UrlRole.url=:url")
+    List<String> findRolesOfUrlByUrl(String url);
 
+    /**
+     * 获取所有的URL与权限的对应关系
+     * @return
+     */
     @Query("select u from UrlRole u")
     List<UrlRole> findAllUrlRoleMapper();
 }

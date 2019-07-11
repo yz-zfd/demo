@@ -40,7 +40,7 @@ public class DriverManageUtil {
                 if("birthday".equals(item.getFieldName())){
                     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
                     Long l = sdf.parse(item.getString("utf-8")).getTime();
-                    map.put(item.getFieldName(),new java.sql.Date(l));
+                    map.put(item.getFieldName(),new Date(l));
                     continue;
                 }
                 map.put(item.getFieldName(),item.getString("utf-8"));

@@ -3,20 +3,34 @@ package com.example.demo.security;
 import com.example.demo.service.MyAuthorityService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.ConfigAttribute;
+import org.springframework.security.access.SecurityConfig;
+import org.springframework.security.web.FilterInvocation;
 import org.springframework.security.web.access.intercept.FilterInvocationSecurityMetadataSource;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
+import org.springframework.web.bind.annotation.RequestMapping;
 
-import java.util.Collection;
-import java.util.LinkedHashMap;
-import java.util.List;
+import javax.servlet.http.HttpServletRequest;
+import java.util.*;
 
+/**
+ * @author zfd
+ */
 public class MyFilterInvocationSecurityMetadataSource implements FilterInvocationSecurityMetadataSource {
     @Autowired
     MyAuthorityService myAuthorityService;
-
+    /**
+     * 为每个url配置了哪些角色
+     */
     private LinkedHashMap<RequestMatcher, List<ConfigAttribute>> listLinkedHashMap;
     @Override
     public Collection<ConfigAttribute> getAttributes(Object o) throws IllegalArgumentException {
+        HttpServletRequest request = ((FilterInvocation) o).getRequest();
+        for (Map.Entry<RequestMatcher, List<ConfigAttribute>> entry:listLinkedHashMap.entrySet()) {
+            if(entry.getKey().matches(request)){
+                return entry.getValue();
+            }
+        }
         return null;
     }
 
@@ -27,10 +41,36 @@ public class MyFilterInvocationSecurityMetadataSource implements FilterInvocatio
 
     @Override
     public boolean supports(Class<?> aClass) {
-        return false;
+        return true;
     }
+    public void init(){
+        listLinkedHashMap=loadRequestMatcherConfigAttributes();
+    }
+
+    /**
+     * 加载全部路径的全部权限
+     * @return
+     */
     private LinkedHashMap<RequestMatcher, List<ConfigAttribute>> loadRequestMatcherConfigAttributes(){
-        myAuthorityService.getAllUrlRoleMapper();
-        return null;
+        LinkedHashMap<String, List<String>> allUrlRoleMapper = myAuthorityService.getAllUrlRoleMapper();
+        LinkedHashMap<RequestMatcher,List<ConfigAttribute>> listLinkedHashMap=new LinkedHashMap<>(allUrlRoleMapper.size());
+        for (Map.Entry<String,List<String>> entry:allUrlRoleMapper.entrySet()) {
+            listLinkedHashMap.put(new AntPathRequestMatcher(entry.getKey()),getRoleConfigAttribute(entry.getValue()));
+        }
+        return listLinkedHashMap;
     }
+
+    /**
+     * 将角色封装成为ConfigAttribute
+     * @param roles
+     * @return
+     */
+    private List<ConfigAttribute> getRoleConfigAttribute(List<String> roles){
+        List<ConfigAttribute> attributes=new ArrayList<>(roles.size());
+        for (String role:roles) {
+            attributes.add(new MyConfigAttribute(role));
+        }
+        return attributes;
+    }
+
 }

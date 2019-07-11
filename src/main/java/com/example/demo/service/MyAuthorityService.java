@@ -5,6 +5,7 @@ import com.example.demo.domain.UrlRole;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 
@@ -15,23 +16,42 @@ import java.util.List;
 public class MyAuthorityService {
     @Autowired
     AuthorityRepository authorityRepository;
-    //获取某个用户的角色集合
+
+    /**
+     * 根据用户名获取用户角色
+     * @param username
+     * @return
+     */
     public List<String> findRolesOfUserByUsername(String username){
         return authorityRepository.findRolesOfUserByUsername(username);
     }
-    //获取某个url的角色集合
+
+    /**
+     * 根据url，获取其需要的角色
+     * @param url
+     * @return
+     */
     public List<String> findRolesOfUrlByUrlname(String url){
-        return authorityRepository.findRolesOfUrlByUrlname(url);
+        return authorityRepository.findRolesOfUrlByUrl(url);
     }
-    //获取所有url与role的对应关系
+
+    /**
+     * 获取所有的url与role的对应关系
+     * @return
+     */
     public LinkedHashMap<String, List<String>> getAllUrlRoleMapper(){
         LinkedHashMap<String, List<String>> linkedHashMap=new LinkedHashMap<>();
         List<UrlRole> list = authorityRepository.findAllUrlRoleMapper();
         for (UrlRole u:list) {
-            if(linkedHashMap.containsKey(u.getUrl_id())){
-
+            String urlKey=u.getUrl();
+            if(linkedHashMap.containsKey(urlKey)){
+                linkedHashMap.get(urlKey).add(u.getRole());
+            }else{
+                List<String> listOfRole = new ArrayList<>();
+                listOfRole.add(u.getRole());
+                linkedHashMap.put(urlKey,listOfRole);
             }
         }
-        return null;
+        return linkedHashMap;
     }
 }

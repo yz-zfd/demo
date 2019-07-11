@@ -3,7 +3,7 @@ package com.example.demo.domain;
 import javax.persistence.*;
 
 /**
- * @author zff
+ * @author zfd
  *
  */
 @Entity
@@ -13,9 +13,9 @@ public class UserRole {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
     @Column
-    private Integer role_id;
+    private String username;
     @Column
-    private Integer user_id;
+    private String role;
 
     public Integer getId() {
         return id;
@@ -25,28 +25,28 @@ public class UserRole {
         this.id = id;
     }
 
-    public Integer getRole_id() {
-        return role_id;
+    public String getUsername() {
+        return username;
     }
 
-    public void setRole_id(Integer role_id) {
-        this.role_id = role_id;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
-    public Integer getUser_id() {
-        return user_id;
+    public String getRole() {
+        return role;
     }
 
-    public void setUser_id(Integer user_id) {
-        this.user_id = user_id;
+    public void setRole(String role) {
+        this.role = role;
     }
 
     @Override
     public String toString() {
         return "UserRole{" +
                 "id=" + id +
-                ", role_id=" + role_id +
-                ", user_id=" + user_id +
+                ", username='" + username + '\'' +
+                ", role='" + role + '\'' +
                 '}';
     }
 }

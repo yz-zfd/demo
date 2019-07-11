@@ -1,7 +1,6 @@
 package com.example.demo.domain;
 
 import javax.persistence.*;
-import javax.persistence.criteria.CriteriaBuilder;
 
 /**
  * @author zff
@@ -14,9 +13,9 @@ public class UrlRole {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
     @Column
-    private Integer role_id;
+    private String url;
     @Column
-    private Integer url_id;
+    private String role;
 
     public Integer getId() {
         return id;
@@ -26,28 +25,28 @@ public class UrlRole {
         this.id = id;
     }
 
-    public Integer getRole_id() {
-        return role_id;
+    public String getUrl() {
+        return url;
     }
 
-    public void setRole_id(Integer role_id) {
-        this.role_id = role_id;
+    public void setUrl(String url) {
+        this.url = url;
     }
 
-    public Integer getUrl_id() {
-        return url_id;
+    public String getRole() {
+        return role;
     }
 
-    public void setUrl_id(Integer url_id) {
-        this.url_id = url_id;
+    public void setRole(String role) {
+        this.role = role;
     }
 
     @Override
     public String toString() {
         return "UrlRole{" +
                 "id=" + id +
-                ", role_id=" + role_id +
-                ", url_id=" + url_id +
+                ", url='" + url + '\'' +
+                ", role='" + role + '\'' +
                 '}';
     }
 }
