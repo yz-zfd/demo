@@ -1,7 +1,10 @@
 package com.example.demo;
 
+import com.example.demo.dao.AuthorityRepository;
 import com.example.demo.dao.DriverRepository;
+import com.example.demo.dao.UserRepository;
 import com.example.demo.domain.DriverInformation;
+import com.example.demo.domain.UrlRole;
 import com.example.demo.service.DriverService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -11,6 +14,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import java.sql.Date;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @RunWith(SpringRunner.class)
@@ -20,7 +24,10 @@ public class DemoApplicationTests {
     DriverService driverService;
     @Autowired
     DriverRepository driverRepository;
-
+    @Autowired
+    UserRepository userRepository;
+    @Autowired
+    AuthorityRepository authorityRepository;
     @Test
     public void getAll(){
         List<DriverInformation> list = driverRepository.find();
@@ -43,6 +50,13 @@ public class DemoApplicationTests {
             i++;
         }
         driverRepository.saveAll(list);
+    }
+    @Test
+    public void getUserRoles(){
+        List<UrlRole> list = authorityRepository.findAllUrlRoleMapper();
+        for (UrlRole str:list) {
+            System.out.println(str.getRole());
+        }
     }
    /* @Test
     public void connect() throws Exception{

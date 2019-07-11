@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 
 /**
+ * 主要获取某个url的所有role
  * @author zfd
  */
 public class MyFilterInvocationSecurityMetadataSource implements FilterInvocationSecurityMetadataSource {

@@ -223,12 +223,12 @@ function submitRegisterInfoByAjax() {
                     $("#registerModal").modal("hide");
                     $("#resultModal").modal("show");
                 }else{
-                    $("#resultText")[0].innerText="操作失败请重试！！！";
+                    $("#resultText")[0].innerText=data;
                     $("#resultModal").modal("show");
                 }
             },
             error:function (result) {
-                $("#resultText")[0].innerText="系统错误，请稍后再试！！！";
+                $("#resultText")[0].innerText="系统错误，请稍后再试！";
                 $("#registerModal").modal("hide");
                 $("#resultModal").modal("show");
             }

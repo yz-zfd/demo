@@ -8,7 +8,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.access.AccessDecisionManager;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.config.annotation.ObjectPostProcessor;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -22,13 +24,16 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.access.AccessDeniedHandler;
+import org.springframework.security.web.access.intercept.FilterSecurityInterceptor;
 import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -51,17 +56,25 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         security.csrf().disable();
         security.authorizeRequests().
                 antMatchers("/css/**","/img/**","/js/**").permitAll().
-                /*antMatchers("/operateDriver").hasRole("ADMIN").
-                antMatchers("/user").hasRole("USER").*/
-                and().
-                formLogin().loginPage("/login").
-                successForwardUrl("/index").failureForwardUrl("/login").permitAll().
-                and().logout().permitAll().invalidateHttpSession(true).
-                deleteCookies("JSESSIONID").logoutSuccessHandler(logoutSuccessHandler()).
-                and().exceptionHandling().accessDeniedHandler(accessDeniedHandler()).
-                and().sessionManagement().maximumSessions(10).expiredUrl("/login")
-
-        ;
+                antMatchers("/operateDriver").hasRole("admin").
+                /*accessDecisionManager(getAccessDecisionManager()).*/
+                anyRequest().authenticated().
+                        and().
+                        formLogin().loginPage("/login").
+                        successForwardUrl("/index").failureForwardUrl("/login").permitAll().
+                        and().logout().permitAll().invalidateHttpSession(true).
+                        deleteCookies("JSESSIONID").logoutSuccessHandler(logoutSuccessHandler()).
+                        and().exceptionHandling().accessDeniedHandler(accessDeniedHandler()).
+                        and().sessionManagement().maximumSessions(10).expiredUrl("/login");
+                /*security.addFilterBefore(getSecurityMetadataSource());*/
+                /* security.authorizeRequests().withObjectPostProcessor(new ObjectPostProcessor<FilterSecurityInterceptor>() {
+                     @Override
+                     public <O extends FilterSecurityInterceptor> O postProcess(O o) {
+                         o.setSecurityMetadataSource(getSecurityMetadataSource());
+                         o.setAccessDecisionManager(getAccessDecisionManager());
+                         return o;
+                     }
+                 })*/
     }
 
 
@@ -85,10 +98,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
        return new AccessDeniedHandler(){
             @Override
             public void handle(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, AccessDeniedException e) throws IOException, ServletException {
-                httpServletResponse.setContentType("application/json;charset=utf-8");
-                httpServletResponse.setContentType("application/json");
-                httpServletResponse.setStatus(HttpServletResponse.SC_OK);
-                httpServletResponse.getWriter().write(e.getMessage());
+                httpServletResponse.setCharacterEncoding("utf-8");
+                /*httpServletResponse.setStatus(200);*/
+                /*httpServletResponse.setStatus(HttpServletResponse.SC_OK);*/
+                httpServletResponse.getWriter().write("权限不足");
             }
         };
     }
@@ -126,6 +139,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         return new UserDetailsService() {
             @Autowired
             private UserRepository userRepository;
+            @Autowired
             private AuthorityRepository authorityRepository;
             @Override
             public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
@@ -139,5 +153,15 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 return authorityRepository.findRolesOfUserByUsername(user.getUsername());
             }
         };
+    }
+    //配置安全元数据源
+    @Bean(initMethod = "init")
+    public MyFilterInvocationSecurityMetadataSource getSecurityMetadataSource(){
+        return new MyFilterInvocationSecurityMetadataSource();
+    }
+    //配置安全决策者
+    @Bean
+    public AccessDecisionManager getAccessDecisionManager(){
+        return new MyAccessDecisionManager(Arrays.asList(new MyAccessDecisionVoter()));
     }
 }
