@@ -222,9 +222,17 @@ function submitRegisterInfoByAjax() {
                     $("#resultText")[0].innerText="操作成功！！！";
                     $("#registerModal").modal("hide");
                     $("#resultModal").modal("show");
-                }else{
+                    return;
+                }
+                if(data == false){
+                    $("#resultText")[0].innerText="操作失败,请重试！！！";
+                    $("#resultModal").modal("show");
+                    return;
+                }
+                if(true){
                     $("#resultText")[0].innerText=data;
                     $("#resultModal").modal("show");
+                    return;
                 }
             },
             error:function (result) {
