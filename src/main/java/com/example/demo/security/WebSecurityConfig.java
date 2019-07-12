@@ -55,26 +55,36 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity security) throws Exception {
         security.csrf().disable();
         security.authorizeRequests().
-                antMatchers("/css/**","/img/**","/js/**").permitAll().
-                antMatchers("/operateDriver").hasRole("admin").
+                /*antMatchers("/css/**","/img/**","/js/**").permitAll().
+                antMatchers("/operateDriver").hasRole("admin").*/
                 /*accessDecisionManager(getAccessDecisionManager()).*/
-                anyRequest().authenticated().
+                /*anyRequest().authenticated().*/
                         and().
                         formLogin().loginPage("/login").
-                        successForwardUrl("/index").failureForwardUrl("/login").permitAll().
+                        successForwardUrl("/index").failureForwardUrl("/index").permitAll().
                         and().logout().permitAll().invalidateHttpSession(true).
                         deleteCookies("JSESSIONID").logoutSuccessHandler(logoutSuccessHandler()).
                         and().exceptionHandling().accessDeniedHandler(accessDeniedHandler()).
-                        and().sessionManagement().maximumSessions(10).expiredUrl("/login");
-                /*security.addFilterBefore(getSecurityMetadataSource());*/
-                /* security.authorizeRequests().withObjectPostProcessor(new ObjectPostProcessor<FilterSecurityInterceptor>() {
+                        and().sessionManagement().maximumSessions(10).expiredUrl("/index");
+        /*FilterSecurityInterceptor f=null;*/
+
+                //自定义安全策略
+                 /*security.authorizeRequests().withObjectPostProcessor(new ObjectPostProcessor<FilterSecurityInterceptor>() {
                      @Override
                      public <O extends FilterSecurityInterceptor> O postProcess(O o) {
                          o.setSecurityMetadataSource(getSecurityMetadataSource());
                          o.setAccessDecisionManager(getAccessDecisionManager());
                          return o;
                      }
-                 })*/
+                 }).antMatchers("/css/**","/img/**","/js/**").permitAll().
+                         anyRequest().authenticated().
+                                 and().
+                                 formLogin().loginPage("/login").
+                                 successForwardUrl("/index").failureForwardUrl("/login").permitAll().
+                                 and().logout().permitAll().invalidateHttpSession(true).
+                                 deleteCookies("JSESSIONID").logoutSuccessHandler(logoutSuccessHandler()).
+                                 and().exceptionHandling().accessDeniedHandler(accessDeniedHandler()).
+                                 and().sessionManagement().maximumSessions(10).expiredUrl("/login");*/
     }
 
 
@@ -99,8 +109,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             @Override
             public void handle(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, AccessDeniedException e) throws IOException, ServletException {
                 httpServletResponse.setCharacterEncoding("utf-8");
-                /*httpServletResponse.setStatus(200);*/
-                /*httpServletResponse.setStatus(HttpServletResponse.SC_OK);*/
                 httpServletResponse.getWriter().write("权限不足");
             }
         };

@@ -1,0 +1,60 @@
+
+1.首先spring security提供了一整套的验证机制（包括登录验证，权限管理），通过预留的配置接口方法：
+WebSecurityConfig中的configure(HttpSecurity security)方法由用户配置一个安全构件器（通过对HttpSecurity进行相关配置）
+2.安全构件器HttpSecurity是SecurityBuilder接口的一个实现类，是spring security对http安全相关实现的一种构件器
+（当然还有其他构件器，如ssh之类的）
+3.一个安全构件器对应众多安全配置器（securityConfigure接口实现类）。
+    spring security自身默认的实现通过authorizeRequests()，formLogin()、httpBasic()三个方法(原理1)返回三个安全配置器，
+    ExpressionUrlAuthorizationConfigurer、FormLoginConfigurer、HttpBasicConfigurer，
+    他们都是SecurityConfigurer接口的实现类，分别代表的是不同类型的安全配置器。
+    原理1：
+        这些方法内部都调用了一个getOrApply(configurer)方法，而getOrApply（configurer）方法内部又通过this.Apply(configurer)
+    调用到父类AbstractConfiguredSecurityBuilder的Apply(configurer)方法中，在返回一个configure之前将每个configure加到父类的
+    configurers中去。而父类中有一个configure（）方法则是对configures集合中的每个configure的configure方法进行调用。
+
+formLogin():上面说到security.formLogin()会返回一个FormLoginConfigurer类型的Configurer,而在FormLoginConfigurer的构造方法中：
+    调用super(new UsernamePasswordAuthenticationFilter(), (String)null);为其注入了一个UsernamePasswordAuthenticationFilter
+    类型过滤器（通过父类的构造方法）。这里还通过usernameParameter("username")以及passwordParameter("password")为指定了表单
+    默认的登录名与密码;
+
+    1.FormLoginConfigurer中的：
+    public FormLoginConfigurer() {
+            super(new UsernamePasswordAuthenticationFilter(), (String)null);
+            this.usernameParameter("username");
+            this.passwordParameter("password");
+    }
+    public FormLoginConfigurer<H> usernameParameter(String usernameParameter) {
+           ((UsernamePasswordAuthenticationFilter)this.getAuthenticationFilter()).setUsernameParameter(usernameParameter);
+                      return this;
+    }
+    2.FormLoginConfigurer 父类 AbstractAuthenticationFilterConfigurer 中：
+    protected final F getAuthenticationFilter() {
+            return this.authFilter;
+        }
+    3.UsernamePasswordAuthenticationFilter中的：
+    public void setUsernameParameter(String usernameParameter) {
+            Assert.hasText(usernameParameter, "Username parameter must not be empty or null");
+            this.usernameParameter = usernameParameter;
+    }
+    为刚刚注册的UsernamePasswordAuthenticationFilter设置默认应该从表单获取的属性名称
+    注：想不通为什么不直接在构造中就为他设置这两个值。
+    构造方法中指定：action属性与提交方式
+    public UsernamePasswordAuthenticationFilter() {
+            super(new AntPathRequestMatcher("/login", "POST"));//指定form表单的action属性值为/login，且提交方式必须为post
+    }
+    attemptAuthentication方法会被回调（在父类AbstractAuthenticationProcessingFilter的doFilter()中通过钩子方法调用），
+    这个方法内部会通过HttpServletRequest.getParameter的方式，获得表单中填写的用户名和密码的值，封装成一个
+    UsernamePasswordAuthenticationToken对象，然后进行校验。
+
+    4.UsernamePasswordAuthenticationFilter的父类AbstractAuthenticationProcessingFilter：
+    public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain)throws IOException, ServletException
+    {
+        逻辑：1.判断是否需要进行验证，其实就是判断请求的路径是否是上面设置的/login,如果不是则直接走
+              2.使用钩子方法attemptAuthentication(request, response)进行判断
+              3.失败调用unsuccessfulAuthentication（）跳转到定义的失败页面，成功调用successfulAuthentication()。并保存信息
+              到session。
+     }
+     loginPage方法定义在这个类中。AbstractAuthenticationFilterConfigurer中维护了一个customLoginPage字段,用于记录用户是否
+     设置了自定义登录页面。在用户设置登录页面的同时AbstractAuthenticationFilterConfigurer的setLoginPage(loginPage)将自定义
+     的登录路径保存，同时将customLoginPage设为true表示用户设置了登录页，同时不再注册默认的登录页。
+
