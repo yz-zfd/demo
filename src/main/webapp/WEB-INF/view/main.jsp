@@ -75,7 +75,7 @@
                                 <br/>
                                 <div class="input-group">
                                     <span class="input-group-addon"><font color="red">*</font>出生日期</span>
-                                    <input id="birthday" name="birthday" class="form-control" type="text" />
+                                    <input id="birthday" name="birthday" style="background-color: white" class="form-control" type="text" readonly/>
                                 </div>
                                 <br/>
                             </div>

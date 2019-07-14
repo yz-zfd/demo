@@ -17,7 +17,7 @@ var $columns=[
     //前端日期需更改格式
     {field:"birthday",title:"生日"},
     {field:"education",title:"教育程度"},
-    {field:"photo",title:"图片"},
+    /*{field:"photo",title:"图片"},*/
 ]
 //用于设置表格插件属性，以及fileinput属性
 $(function () {
@@ -30,7 +30,8 @@ $(function () {
             cache:false,
             pagination:true,//是否分页
             sortable:true,
-            sortOrder:"asc",
+            sortName:"id",
+            sortOrder:"desc",
             sidePagination:"client",
             pageNumber:1,
             pageSize:10,
@@ -75,7 +76,47 @@ $(function () {
         browseClass:"btn btn-primary",//按钮样式
     })
 })
-//用于检验数据的正确性
+//判断身份证出生日期是否合理
+function checkMyDate(birthday){
+    var myDate=new Date();
+    var myDateYear=myDate.getFullYear();
+    var myDateMonth=myDate.getMonth();
+    var myDateDay=myDate.getDate();
+    //由于月份与天数是系统解析出的，所有不做大于1判断
+    if(myDateMonth+1<=9){
+        myDateMonth="0"+(myDateMonth+1);
+    }
+    if (myDateDay<=9){
+        myDateDay="0"+myDateDay;
+    }
+    myDate=myDateYear+myDateMonth+myDateDay;
+    console.debug(birthday+"=="+myDate)
+    if (parseInt(birthday) <= parseInt(myDate)){
+        return true;
+    }
+    return false;
+
+}
+//通过身份证号设置出生日期
+$(function () {
+    $("#person_id").change(function () {
+        //先判断证件号码是否正确，正确获取证件号码中的6-14位生成日期
+        if((/^[1-9]\d{7}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])\d{3}$|^[1-9]\d{5}[1-9]\d{3}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])\d{3}([0-9]|X)$/.test($("#person_id")[0].value))){
+            var birthday=this.value.slice(6,14)
+            console.debug(birthday);
+            if(birthday.trim().length==8 && checkMyDate(birthday)){
+                $("#messageBody")[0].innerText = "";
+                birthday=birthday.slice(0,4)+"-"+birthday.slice(4,6)+"-"+birthday.slice(6,8);
+                $("#birthday")[0].value=birthday;
+            }else{
+                $("#messageBody")[0].innerText = "身份证号日期可能有错误，请检查！";
+                $("#messageModal").modal("show");
+            }
+        }
+
+    })
+})
+//提交时用于检验数据的正确性
 function checkInfo() {
     var status=true;
     $("#messageBody")[0].innerText = ""
@@ -94,6 +135,10 @@ function checkInfo() {
     }
     if (status && !(/^[1-9]\d{7}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])\d{3}$|^[1-9]\d{5}[1-9]\d{3}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])\d{3}([0-9]|X)$/.test($("#person_id")[0].value))) {
         $("#messageBody")[0].innerText = "身份证号不合法！"
+        status=false;
+    }
+    if(status && !checkMyDate($("#person_id")[0].value.slice(6,14))){
+        $("#messageBody")[0].innerText = "身份证号出生日期大于今日,请使用真实身份证！"
         status=false;
     }
     if (status) {
@@ -198,6 +243,7 @@ function getDetailsByAjax(id){
     })
 }
 function alertModelByDetails(row){
+//注册或编辑ajax提交
     getDetailsByAjax(row.valueOf().id);
     $("#actionType")[0].innerText="详情(只读)"
     $("#submitChangeButton")[0].disabled="disabled";
@@ -205,7 +251,6 @@ function alertModelByDetails(row){
     $("#driverInfoForm").find("select").attr("disabled",true);
     $("#registerModal").modal("show");
 }
-//注册或编辑ajax提交
 function submitRegisterInfoByAjax() {
     if(!checkInfo()){
         $("#messageModal").modal("show");
@@ -220,6 +265,7 @@ function submitRegisterInfoByAjax() {
             success:function (data) {
                 if(data == true){
                     $("#resultText")[0].innerText="操作成功！！！";
+                    $("#table1").bootstrapTable("refresh");
                     $("#registerModal").modal("hide");
                     $("#resultModal").modal("show");
                     return;
@@ -250,6 +296,11 @@ $(function () {
         minView:"month",
         language:"zh-CN",
         format:"yyyy-mm-dd",
+        //显示的当前日期
         setData:new Date(),
+        //最大可选
+        endDate:new Date(),
+
+
     });
 })

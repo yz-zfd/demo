@@ -55,10 +55,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity security) throws Exception {
         security.csrf().disable();
         security.authorizeRequests().
-                /*antMatchers("/css/**","/img/**","/js/**").permitAll().
-                antMatchers("/operateDriver").hasRole("admin").*/
+                antMatchers("/css/**","/img/**","/js/**").permitAll().
+                antMatchers("/operateDriver").hasRole("admin").
                 /*accessDecisionManager(getAccessDecisionManager()).*/
-                /*anyRequest().authenticated().*/
+                anyRequest().authenticated().
                         and().
                         formLogin().loginPage("/login").
                         successForwardUrl("/index").failureForwardUrl("/index").permitAll().
