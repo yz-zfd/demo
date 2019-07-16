@@ -9,6 +9,11 @@ import javax.persistence.*;
 @Entity
 @Table(name="url_role")
 public class UrlRole {
+    /**
+     * @id 路径角色映射id
+     * @url url 路径
+     * @role 角色
+     */
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;

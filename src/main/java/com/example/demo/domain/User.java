@@ -10,6 +10,12 @@ import javax.persistence.*;
 @Entity
 @Table(name="user")
 public class User {
+    /**
+     * @id 用户id
+     * @username 用户名称
+     * @password 用户密码
+     * @driverInfoId 驾驶员信息
+     */
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;

@@ -12,7 +12,11 @@ import java.util.Collection;
 import java.util.List;
 
 /**
+ * 暂未使用
  * @author zfd
+ * 本类实现了AccessDecisionManager接口
+ * 是一个投票器决策者，主要针对多个
+ * 投票器时，当投票器意见不统一时，由本类做出决策
  */
 public class MyAccessDecisionManager implements AccessDecisionManager {
     private List<AccessDecisionVoter<FilterInvocation>> accessDecisionVoters;

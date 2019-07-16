@@ -20,7 +20,7 @@ public class MyAuthorityService {
     /**
      * 根据用户名获取用户角色
      * @param username
-     * @return
+     * @return 某个用户的全部角色
      */
     public List<String> findRolesOfUserByUsername(String username){
         return authorityRepository.findRolesOfUserByUsername(username);
@@ -29,7 +29,7 @@ public class MyAuthorityService {
     /**
      * 根据url，获取其需要的角色
      * @param url
-     * @return
+     * @return 返回某个url的全部角色
      */
     public List<String> findRolesOfUrlByUrlname(String url){
         return authorityRepository.findRolesOfUrlByUrl(url);
@@ -37,7 +37,7 @@ public class MyAuthorityService {
 
     /**
      * 获取所有的url与role的对应关系
-     * @return
+     * @return url与role的对应关系
      */
     public LinkedHashMap<String, List<String>> getAllUrlRoleMapper(){
         LinkedHashMap<String, List<String>> linkedHashMap=new LinkedHashMap<>();

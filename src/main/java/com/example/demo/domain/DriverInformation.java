@@ -14,30 +14,30 @@ import java.sql.Date;
 public class DriverInformation implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Integer id;
+    private Integer id;//id值
     @Column
-    private String name;
+    private String name;//名字
     @Column
-    private String nationality;
+    private String nationality;//国籍
     @Column
-    private String phone_number;
+    private String phone_number;//电话号码
     @Column
-    private Boolean marital_status;
+    private Boolean marital_status;//婚姻状态
     @Column
-    private String person_id;
+    private String person_id;//身份证号
     @Column
-    private String company;
+    private String company;//公司
     @Column
-    private String sex;
+    private String sex;//性别
     @Column
-    private String foreign_language_ability;
+    private String foreign_language_ability;//外语能力
     @JsonFormat(pattern = "yyyy-MM-dd")
     @Column
-    private Date birthday;
+    private Date birthday;//出生日期
     @Column
-    private String education;
+    private String education;//教育水平
     @Column
-    private String photo;
+    private String photo;//头像
 
     public DriverInformation() {
     }

@@ -36,7 +36,7 @@ public class DriverManageUtil {
                 if("birthday".equals(item.getFieldName())){
                     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
                     long l = sdf.parse(item.getString("utf-8")).getTime();
-                    map.put(item.getFieldName(),new Date(l));
+                    map.put(item.getFieldName(),new Date(l+24*3600*1000));
                     continue;
                 }
                 if("marital_status".equals(item.getFieldName())){
@@ -53,8 +53,6 @@ public class DriverManageUtil {
                     String path=request.getSession().getServletContext().getRealPath("/driverImg/")+fileName;
                     item.write(new File(path));
                     map.put(item.getFieldName(),fileName);
-                }else {
-                    map.put(item.getFieldName(),"default.png");
                 }
             }
         }

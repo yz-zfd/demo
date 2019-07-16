@@ -4,6 +4,8 @@ import org.springframework.security.core.GrantedAuthority;
 
 /**
  * @author zfd
+ * 对用户的角色进行装饰，复写equals（）方法与hashcode（）方法
+ * 使其能与过滤器中的某个url对应的角色相比较
  */
 public class MyGrantedAuthority implements GrantedAuthority {
     private final String role;

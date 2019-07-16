@@ -39,8 +39,8 @@ public class DriverService {
 
     /**
      * 用于将表单数据封装到driver对象中，并保存图片到文件系统中
-     * @param request
-     * @return i
+     * @param request HttpServletRequest请求对象
+     * @return 返回boolean
      */
     @Transactional(rollbackFor = RuntimeException.class)
     public boolean operateDriver(HttpServletRequest request){
@@ -49,6 +49,11 @@ public class DriverService {
         try {
             DriverManageUtil.parseFileFormUtil(map,request);
             BeanUtils.populate(driver,map);
+            //针对于特殊的编辑而不修改图片，可用复杂的sql更新语句替代
+            if(driver.getId()!=null && driver.getPhoto()==null){
+                Optional<DriverInformation> optional = driverRepository.findById(driver.getId());
+                driver.setPhoto(optional.get().getPhoto());
+            }
             driverRepository.save(driver);
         } catch (Exception e) {
             e.printStackTrace();
@@ -60,7 +65,7 @@ public class DriverService {
     /**
      * 查询一个驾驶员的全部信息
      * @param id
-     * @return
+     * @return 返回DriverInformation对象
      */
     public DriverInformation queryOneDriver(Integer id){
         Optional<DriverInformation> driverInformation=driverRepository.findById(id);
@@ -69,9 +74,9 @@ public class DriverService {
 
     /**
      *
-     * @param person_id
-     * @param id
-     * @return
+     * @param person_id 身份证号
+     * @param id id号
+     * @return 返回boolean
      * 首先通过id查询该id的person_id是否与修改后的person_id相同，
      * 若相同则不作判断，不同则证明更改了身份证号，
      * 需判断是否与其他的person_id相同

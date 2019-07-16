@@ -14,7 +14,10 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 
 /**
- * 主要获取某个url的所有role
+ * 过滤器元数据源
+ * 主要用于服务器启动时从数据库中加载出
+ * 全部的url权限生成以url为key,角色集合为value的链表集合
+ * 后期比对数据来自于此
  * @author zfd
  */
 public class MyFilterInvocationSecurityMetadataSource implements FilterInvocationSecurityMetadataSource {

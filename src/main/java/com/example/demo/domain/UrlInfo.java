@@ -9,6 +9,10 @@ import javax.persistence.*;
 @Entity
 @Table(name="url")
 public class UrlInfo {
+    /**
+     * @id 路径id值
+     * @url 路径
+     */
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;

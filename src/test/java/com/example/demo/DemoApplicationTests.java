@@ -13,6 +13,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.sql.Date;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -40,13 +42,15 @@ public class DemoApplicationTests {
      * 用于批量增加数据。
      */
     @Test
-    public void contextLoads() {
+    public void contextLoads() throws ParseException {
         int i=0;
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         Date date = new Date(new java.util.Date().getTime());
         ArrayList<DriverInformation> list = new ArrayList<>();
+        int j=1900;
         while(i<100){
             //插入部分数据是要自己写sql的
-            list.add(new DriverInformation("张山"+i,"中国","13508253588",false,"513022XXXXXXXXX","yz","男","good",date,"本科","c:\\"));
+            list.add(new DriverInformation("张山山","中国","13508253588",false,"513022"+(j+i)+"02016694","yz","男","good",new Date(sdf.parse((j+i)+"-02-01").getTime()+24*3600*1000),"本科","default.png"));
             i++;
         }
         driverRepository.saveAll(list);

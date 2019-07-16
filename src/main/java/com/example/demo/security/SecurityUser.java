@@ -14,6 +14,8 @@ import java.util.Set;
 /**
  * @author zfd
  * 2019/07/03
+ * 将查询到的用户对象封装成UserDetails
+ * 供过滤器认证以及判断权限
  */
 public class SecurityUser extends User implements UserDetails {
     private static final long serialVersionUID=1L;

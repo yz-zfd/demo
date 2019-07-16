@@ -22,18 +22,44 @@ public interface DriverRepository extends JpaRepository <DriverInformation,Integ
      *
      * @return 返回所有驾驶员信息集合
      */
-    /*@Cacheable(key="'drivers'")*/
     @Query("select d from DriverInformation d")
      List<DriverInformation> find();
 
+    /**
+     * 保存或更新某个驾驶员信息
+     * @param s
+     * @param <S>
+     * @return
+     */
     @Override
     @CachePut(key="'Driver'+#s.id")
     <S extends DriverInformation> S save(S s);
 
+    /**
+     * 查询id值为某个值的驾驶员
+     * @param id id值
+     * @return
+     */
     @Override
     @Cacheable(key="'Driver'+#id")
     Optional<DriverInformation> findById(Integer id);
 
+    /**
+     * 查询身份证号为某个值的驾驶员
+     * @param person_id 身份证号
+     * @return
+     */
+    @Cacheable(key="'Driver'+#id")
     @Query("select d from DriverInformation d where person_id=:person_id")
      DriverInformation findByPerson_id(String person_id);
+
+    /**
+     * 针对photo为空的记录使用特殊更新sql。
+     */
+    /*@Query("update DriverInformation d set d.name=driverInformation.name,d.nationality=driverInformation.nationality," +
+            "d.phone_number=driverInformation.phone_number,d.marital_status=driverInformation.marital_status," +
+            "d.person_id=driverInformation.person_id,d.company=driverInformation.company,d.sex=driverInformation.sex," +
+            "d.foreign_language_ability=driverInformation.foreign_language_ability," +
+            "d.birthday=driverInformation.birthday,d.education=driverInformation.education,d.name=driverInformation.name")
+    int update(DriverInformation driverInformation);*/
 }

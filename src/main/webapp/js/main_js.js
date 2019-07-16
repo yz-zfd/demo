@@ -79,16 +79,17 @@ $(function () {
         },
         browseClass:"btn btn-primary",//按钮样式
     })
-    //选择文件后触发事件：
+    //选择文件后触发事件：（若是用户没有选择图片则不会触发，则默认为本身的图片）
     $("#photo").on("filebatchselected", function(event, files) {
         //新增图片后缀名判断
         var photoExtenName="";
         photoExtenName=$("#photo").val().substring($("#photo").val().indexOf('.'),$("#photo").val().length).toUpperCase();
         if(!(photoExtenName==".JPG" ||photoExtenName==".PNG"||photoExtenName==".JPRG")){
             $("#messageBody")[0].innerText = "图片格式不正确请重新上传！";
+            $("#photo").val("");
             $("#messageModal").modal("show");
         }else{
-            $filePath=URL.createObjectURL(files[0]);//这个方法很不错，将文件重新创建url给img
+            $filePath=URL.createObjectURL(files[0]);//这个方法很不错，将文件重新生成url给img
             $("#photoImg").attr("src",$filePath);
         }
     });
@@ -101,7 +102,7 @@ function checkMyDate(birthday){
     var myDateYear=myDate.getFullYear();
     var myDateMonth=myDate.getMonth();
     var myDateDay=myDate.getDate();
-    //由于月份与天数是系统解析出的，所有不做大于1判断
+    //由于月份与天数是系统解析出的，所有不做大于0判断
     if(myDateMonth+1<=9){
         myDateMonth="0"+(myDateMonth+1);
     }
@@ -118,7 +119,7 @@ function checkMyDate(birthday){
 }
 //通过身份证号设置出生日期---------------------------------------------------------------------------------
 $(function () {
-    $("#person_id").change(function () {
+    $("#person_id").blur(function () {
         //先判断证件号码是否正确，正确获取证件号码中的6-14位生成日期
         if((/^[1-9]\d{7}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])\d{3}$|^[1-9]\d{5}[1-9]\d{3}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])\d{3}([0-9]|X)$/.test($("#person_id")[0].value))){
             var birthday=this.value.slice(6,14)
@@ -221,6 +222,7 @@ function alertModelByEdit(){
     $("#id")[0].value=row[0].valueOf().id
     $("#driverInfoForm").find("input").attr("disabled",false);
     $("#driverInfoForm").find("select").attr("disabled",false);
+    $("#photo").val("");
     $("#submitChangeButton")[0].disabled="";
     setDiverDetails(row[0]);
     $("#registerModal").modal("show");
@@ -303,6 +305,7 @@ function submitRegisterInfoByAjax() {
                 $("#resultModal").modal("show");
             }
         })
+
         $("#registerModal").modal("hide");
     }
 }

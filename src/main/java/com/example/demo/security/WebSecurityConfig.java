@@ -40,6 +40,9 @@ import java.util.Set;
 
 /**
  * @author zfd
+ * 本类作为spring SecuritySecurity安全构件器，在此类中配置了多个安全配置器
+ * 供构件器使用，如configure方法中的security.authorizeRequests()是对权限配置器进行配置。
+ * onfigure方法中的formLogin()方法是对登录认证器进行配置
  */
 @Configuration
 @EnableWebSecurity
