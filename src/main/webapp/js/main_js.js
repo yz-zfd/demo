@@ -1,5 +1,6 @@
 var type="注册新用户！！！";
 var $queryURL="/getAllDriver?t="+Math.random();
+//表格列属性----------------------------------------------------------------------------------------
 var $columns=[
     {checkbox:true,visible:true},
     {field:"id",visible: false},
@@ -9,7 +10,9 @@ var $columns=[
         }},
     {field:"nationality",title:"国籍"},
     {field:"phone_number",title:"号码"},
-    {field:"marital_status",title:"婚姻状态"},
+    {field:"marital_status",title:"婚姻状态",formatter:function (value,row,index) {
+            return value==true ? "已婚":"未婚";
+        }},
     {field:"person_id",title:"身份证号"},
     {field:"company",title:"所属公司"},
     {field:"sex",title:"性别",sortable:true},
@@ -17,9 +20,9 @@ var $columns=[
     //前端日期需更改格式
     {field:"birthday",title:"生日"},
     {field:"education",title:"教育程度"},
-    /*{field:"photo",title:"图片"},*/
+    {field:"photo",visible:false},
 ]
-//用于设置表格插件属性，以及fileinput属性
+//用于设置表格插件属性及fileinput插件属性--------------------------------------------------------
 $(function () {
     $("#table1").bootstrapTable("destroy");
     $("#table1").bootstrapTable(
@@ -55,8 +58,9 @@ $(function () {
     );
     $("#photo").fileinput({
         language:"zh",
-        // uploadUrl: "/driverImg",//上传路径
-        addlwedFileExtensions:["jpg","png","gif"],
+
+        autoreplace:true,
+        addlwedFileExtensions:["jpg","png"],
         maxFileCount:1,
         layoutTemplates:{
           actionUpload: '',
@@ -65,18 +69,33 @@ $(function () {
         },
         dropZoneTitle: "图片规格：1寸照片 大小 295 x 413",
 
-        //showBrowse:false,//不显示浏览按钮
         showCaption:false,//是否显示标题
         showUpload:false,//显示上传按钮
         showRemove:false,
+        showPreview:false,
         showClose:false,
         borderTopWidth:{
             actionDelete:"",
         },
         browseClass:"btn btn-primary",//按钮样式
     })
+    //选择文件后触发事件：
+    $("#photo").on("filebatchselected", function(event, files) {
+        //新增图片后缀名判断
+        var photoExtenName="";
+        photoExtenName=$("#photo").val().substring($("#photo").val().indexOf('.'),$("#photo").val().length).toUpperCase();
+        if(!(photoExtenName==".JPG" ||photoExtenName==".PNG"||photoExtenName==".JPRG")){
+            $("#messageBody")[0].innerText = "图片格式不正确请重新上传！";
+            $("#messageModal").modal("show");
+        }else{
+            $filePath=URL.createObjectURL(files[0]);//这个方法很不错，将文件重新创建url给img
+            $("#photoImg").attr("src",$filePath);
+        }
+    });
+
+
 })
-//判断身份证出生日期是否合理
+//判断身份证出生日期是否合理-----------------------------------------------------------------------------
 function checkMyDate(birthday){
     var myDate=new Date();
     var myDateYear=myDate.getFullYear();
@@ -97,7 +116,7 @@ function checkMyDate(birthday){
     return false;
 
 }
-//通过身份证号设置出生日期
+//通过身份证号设置出生日期---------------------------------------------------------------------------------
 $(function () {
     $("#person_id").change(function () {
         //先判断证件号码是否正确，正确获取证件号码中的6-14位生成日期
@@ -116,11 +135,11 @@ $(function () {
 
     })
 })
-//提交时用于检验数据的正确性
+//提交时用于检验表单数据的正确性----------------------------------------------------------------
 function checkInfo() {
     var status=true;
     $("#messageBody")[0].innerText = ""
-    if (status && !(/^[\u4e00-\u9fa5]{2,4}$/.test($("#name")[0].value))) {
+    if (status && !(/^[\u4e00-\u9fa5]{2,16}$/.test($("#name")[0].value))) {
         $("#messageBody")[0].innerText = "请输入正确的姓名！"
         status=false;
     }
@@ -156,13 +175,9 @@ function checkInfo() {
             },
         })
     }
-    if(status && $("#birthday")[0].value==""){
-        $("#messageBody")[0].innerText = "请选择日期！";
-        status=false;
-    }
     return status;
 }
-//编辑时回显数据
+//编辑时回显数据------------------------------------------------------------------
 function setDiverDetails(row) {
     $("#name")[0].value=row.valueOf().name;
     $("#phone_number")[0].value=row.valueOf().phone_number;
@@ -175,16 +190,20 @@ function setDiverDetails(row) {
     var status=row.valueOf().marital_status==true ? "已婚":"未婚"
     $("#marital_status").val(status);
     $("#sex").val(row.valueOf().sex);
-    //$("#photo")[0].value=row.valueOf().photo;
+    if(row.valueOf().photo!=null && row.valueOf().photo.trim()!=""){
+        $("#photoImg").attr("src","../../driverImg/"+row.valueOf().photo);
+    }
 }
+//设置注册独有的模态框属性---------------------------------------------------------------
 function alertModelByRegister(){
-    //设置注册独有的模态框属性
     $("#actionType")[0].innerText="注册新用户！！！";
     $("#registerModal input").val("");
     $("#driverInfoForm").find("input").attr("disabled",false);
     $("#driverInfoForm").find("select").attr("disabled",false);
+    $("#photoImg").attr("src","../../driverImg/default.png");
     $("#submitChangeButton")[0].disabled="";
 }
+//设置编辑的一些提示逻辑已经数据来源---------------------------------------------------------
 function alertModelByEdit(){
     var row=$("#table1").bootstrapTable("getSelections",function (row) {
         return row;
@@ -205,17 +224,13 @@ function alertModelByEdit(){
     $("#submitChangeButton")[0].disabled="";
     setDiverDetails(row[0]);
     $("#registerModal").modal("show");
+
 }
 /**
  * 这是从前台直接拿数据的方法
  */
-/*function alertModelByDetails(row) {
-    setDiverDetails(row);
-    $("#actionType")[0].innerText="详情(只读)"
-    $("#submitChangeButton")[0].disabled="disabled";
-    $("#registerModal").modal("show");
-}*/
-//详情操作重新请求后台数据
+
+//详情操作重新请求后台数据-------------------------------------------------------------------
 function getDetailsByAjax(id){
     $.ajax({
         url:"/getDriverDetails",
@@ -232,18 +247,18 @@ function getDetailsByAjax(id){
             $("#company")[0].value=driver.company;
             $("#foreign_language_ability")[0].value=driver.foreign_language_ability;
             $("#education")[0].value=driver.education;
-            var status=driver.marital_status==true ? "已婚":"未婚"
-            $("#marital_status").val(status);
+            var status=driver.marital_status==true ? "已婚":"未婚";
             $("#sex").val(driver.sex);
-            // $("#photo")[0].value=driver.photo;
+            $("#photoImg").attr("src","../../driverImg/"+driver.photo);
         },
         error:function () {
             console.debug("sss");
         },
     })
 }
+//弹出详情框-------------------------------------------------------------------------------------------
 function alertModelByDetails(row){
-//注册或编辑ajax提交
+//通过ajax重新读取详情缓存数据
     getDetailsByAjax(row.valueOf().id);
     $("#actionType")[0].innerText="详情(只读)"
     $("#submitChangeButton")[0].disabled="disabled";
@@ -251,6 +266,7 @@ function alertModelByDetails(row){
     $("#driverInfoForm").find("select").attr("disabled",true);
     $("#registerModal").modal("show");
 }
+//编辑与注册提交---------------------------------------------------------------------------------------
 function submitRegisterInfoByAjax() {
     if(!checkInfo()){
         $("#messageModal").modal("show");
@@ -290,7 +306,7 @@ function submitRegisterInfoByAjax() {
         $("#registerModal").modal("hide");
     }
 }
-//日期控件
+//日期控件---------------------------------------------------------------------------------------
 $(function () {
     $("#birthday").datetimepicker({
         minView:"month",
@@ -300,7 +316,18 @@ $(function () {
         setData:new Date(),
         //最大可选
         endDate:new Date(),
-
-
     });
 })
+//图片显示---------------------------------------------------------------------------------------
+function photoCut(p) {
+//图片加载完后设置大小
+    if (p.width>215 || p.height>146){
+        //下面只是为了保持图片的比例不让其失真
+        if (p.width/p.height>215/146){
+            p.width=215;
+        }
+        else{
+            p.height=146;
+        }
+    }
+}

@@ -9,6 +9,7 @@ import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
@@ -27,6 +28,10 @@ public class DriverService {
     @Autowired
     private DriverRepository driverRepository;
 
+    /**
+     * 或取全部驾驶员的信息
+     * @return
+     */
     public List<DriverInformation> queryDrivers(){
         List<DriverInformation> list = driverRepository.find();
         return list;
@@ -37,9 +42,9 @@ public class DriverService {
      * @param request
      * @return i
      */
-    @Transactional
+    @Transactional(rollbackFor = RuntimeException.class)
     public boolean operateDriver(HttpServletRequest request){
-        Map<String,Object> map=new HashMap<>();
+        Map<String,Object> map=new HashMap<>(request.getContentLength());
         DriverInformation driver = new DriverInformation();
         try {
             DriverManageUtil.parseFileFormUtil(map,request);
@@ -51,7 +56,12 @@ public class DriverService {
         }
         return true;
     }
-    //查询一个司机
+
+    /**
+     * 查询一个驾驶员的全部信息
+     * @param id
+     * @return
+     */
     public DriverInformation queryOneDriver(Integer id){
         Optional<DriverInformation> driverInformation=driverRepository.findById(id);
         return driverInformation.get();
@@ -77,7 +87,12 @@ public class DriverService {
         }
         return true;
     }
-    //方法重载，注册的时候直接判断是否重复。
+
+    /**
+     * 重载方法，用于区分注册与更改。
+     * @param person_id
+     * @return
+     */
     public boolean personIdCheck(String person_id){
         if((driverRepository.findByPerson_id(person_id)) != null){
             return false;

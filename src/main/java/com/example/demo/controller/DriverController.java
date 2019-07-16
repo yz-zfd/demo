@@ -32,7 +32,10 @@ public class DriverController {
         return "/view/main";
     }
 
-    //驾驶员注册或更新
+    /**
+     *
+     *驾驶员注册或更新
+     */
     @RequestMapping(value="/operateDriver",method = RequestMethod.POST)
     @ResponseBody
     public boolean operateDriver(HttpServletRequest req){
@@ -41,14 +44,20 @@ public class DriverController {
         }
         return false;
     }
-    //驾驶员详情
+    /**
+     *驾驶员详情
+     *
+     */
     @RequestMapping("/getDriverDetails")
     @ResponseBody
     public DriverInformation getDriverDetails(Integer id){
         DriverInformation driverInformation = driverService.queryOneDriver(id);
         return driverInformation;
     }
-    //验证身份证号是否重复
+    /**
+     *验证身份证号是否重复
+     *
+     */
     @RequestMapping("/personIdCheck")
     @ResponseBody
     public boolean personIdCheck(String person_id,Integer id){
@@ -61,9 +70,5 @@ public class DriverController {
         }
         return b;
     }
-    //test
-    @RequestMapping("/user")
-    public void user(){
-        System.out.println("user");
-    }
+
 }

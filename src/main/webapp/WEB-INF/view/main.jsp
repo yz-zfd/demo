@@ -110,6 +110,11 @@
                                 <br/>
                             </div>
                             <div class="col-xs-4 col-sm-4 col-xs-6 ">
+                                    <%--img用于图片回显--%>
+                                <div align="center">
+                                    <img id="photoImg" src="../../driverImg/default.png" onload="photoCut(this)"/>
+                                </div>
+                                <br/><br/>
                                 <div class="fileinput fileinput-new" data-provides="fileinput" id="uploadImgDiv" align="center">
                                     <input type="file" name="photo" id="photo">
                                 </div>
