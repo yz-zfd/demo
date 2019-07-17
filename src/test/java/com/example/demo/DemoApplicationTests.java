@@ -50,7 +50,7 @@ public class DemoApplicationTests {
         int j=1900;
         while(i<100){
             //插入部分数据是要自己写sql的
-            list.add(new DriverInformation("张山山","中国","13508253588",false,"513022"+(j+i)+"02016694","yz","男","good",new Date(sdf.parse((j+i)+"-02-01").getTime()+24*3600*1000),"本科","default.png"));
+            list.add(new DriverInformation("张山山","中国","135"+(j+i)+"3588",false,"513022"+(j+i)+"02016694","yz","男","good",new Date(sdf.parse((j+i)+"-02-01").getTime()+24*3600*1000),"本科","default.png"));
             i++;
         }
         driverRepository.saveAll(list);

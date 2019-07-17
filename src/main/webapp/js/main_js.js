@@ -110,7 +110,6 @@ function checkMyDate(birthday){
         myDateDay="0"+myDateDay;
     }
     myDate=myDateYear+myDateMonth+myDateDay;
-    console.debug(birthday+"=="+myDate)
     if (parseInt(birthday) <= parseInt(myDate)){
         return true;
     }
@@ -163,16 +162,23 @@ function checkInfo() {
     if (status) {
         $.ajax({
             url: "/personIdCheck",
-            dataType: "json",
+            dataType: "text",
             async:false,
-            data: {"person_id":$("#person_id")[0].value,"id":$("#id")[0].value},
+            data: {"personId":$("#person_id")[0].value,"phoneNumber":$("#phone_number")[0].value,"id":$("#id")[0].value},
             type: "get",
             success: function (data) {
-                if (data == false) {
-                    $("#messageBody")[0].innerText = "身份证号已经存在！";
+                if (data.toString() == "phoneNumber") {
+                    $("#messageBody")[0].innerText = "手机号已经存在！";
+                    status=false;
+                }else if (data.toString() == "personId") {
+                    $("#messageBody")[0].innerText = "身份证已经存在！";
                     status=false;
                 }
             },
+            error:function (data) {
+                console.debug(data);
+
+            }
         })
     }
     return status;
@@ -203,7 +209,7 @@ function alertModelByRegister(){
     $("#photoImg").attr("src","../../driverImg/default.png");
     $("#submitChangeButton")[0].disabled="";
 }
-//设置编辑的一些提示逻辑已经数据来源---------------------------------------------------------
+//设置编辑的一些提示逻辑以及数据来源---------------------------------------------------------
 function alertModelByEdit(){
     var row=$("#table1").bootstrapTable("getSelections",function (row) {
         return row;

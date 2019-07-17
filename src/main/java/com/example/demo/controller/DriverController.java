@@ -4,13 +4,12 @@ import com.example.demo.domain.DriverInformation;
 import com.example.demo.service.DriverService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author  ZFD
@@ -24,8 +23,7 @@ public class DriverController {
     @RequestMapping("/getAllDriver")
     @ResponseBody
     public List<DriverInformation> getAllDriver(){
-        List<DriverInformation> list = driverService.queryDrivers();
-        return list;
+        return driverService.queryDrivers();
     }
     @RequestMapping("/index")
     public String index(){
@@ -39,10 +37,8 @@ public class DriverController {
     @RequestMapping(value="/operateDriver",method = RequestMethod.POST)
     @ResponseBody
     public boolean operateDriver(HttpServletRequest req){
-        if(driverService.operateDriver(req)){
-            return true;
-        }
-        return false;
+        boolean b=driverService.operateDriver(req);
+        return b;
     }
     /**
      *驾驶员详情
@@ -51,8 +47,7 @@ public class DriverController {
     @RequestMapping("/getDriverDetails")
     @ResponseBody
     public DriverInformation getDriverDetails(Integer id){
-        DriverInformation driverInformation = driverService.queryOneDriver(id);
-        return driverInformation;
+        return driverService.queryOneDriver(id);
     }
     /**
      *验证身份证号是否重复
@@ -60,15 +55,15 @@ public class DriverController {
      */
     @RequestMapping("/personIdCheck")
     @ResponseBody
-    public boolean personIdCheck(String person_id,Integer id){
+    public String personIdCheck(String personId,String phoneNumber,Integer id){
         //定义状态变量
-        boolean b;
-        if(id==null||id.toString()==""){
-            b=driverService.personIdCheck(person_id);
+        String resultOfCheck;
+        if(id==null|| "".equals(id.toString())){
+            resultOfCheck=driverService.personIdAndPhoneNumberCheck(personId,phoneNumber);
         }else{
-            b = driverService.personIdCheck(person_id, id);
+            resultOfCheck = driverService.personIdAndPhoneNumberCheck(personId,phoneNumber,id);
         }
-        return b;
+        return resultOfCheck;
     }
 
 }

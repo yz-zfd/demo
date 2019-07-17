@@ -46,12 +46,18 @@ public interface DriverRepository extends JpaRepository <DriverInformation,Integ
 
     /**
      * 查询身份证号为某个值的驾驶员
-     * @param person_id 身份证号
+     * @param personId 身份证号
      * @return
      */
-    @Cacheable(key="'Driver'+#id")
-    @Query("select d from DriverInformation d where person_id=:person_id")
-     DriverInformation findByPerson_id(String person_id);
+    @Query("select d from DriverInformation d where person_id=:personId")
+     DriverInformation findByPersonId(String personId);
+    /**
+     * 查询身份证号为某个值的驾驶员
+     * @param phoneNumber 身份证号
+     * @return 返回某个符合身份证号的驾驶员信息
+     */
+    @Query("select d from DriverInformation d where phone_number=:phoneNumber")
+    DriverInformation findByPhoneNumber(String phoneNumber);
 
     /**
      * 针对photo为空的记录使用特殊更新sql。
