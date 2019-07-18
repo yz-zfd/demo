@@ -49,7 +49,7 @@ public class DriverService {
             if(driver.getPhoto()==null && driver.getId()!=null && driver.getId()!=0){
                 Optional<DriverInformation> optional = driverRepository.findById(driver.getId());
                 driver.setPhoto(optional.get().getPhoto());
-            }else if (driver.getId()==0){
+            }else if (driver.getPhoto()==null && driver.getId()==0){
                 driver.setPhoto("default.png");
             }
             driverRepository.save(driver);
