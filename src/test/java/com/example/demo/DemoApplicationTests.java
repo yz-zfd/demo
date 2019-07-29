@@ -31,13 +31,24 @@ public class DemoApplicationTests {
     @Autowired
     AuthorityRepository authorityRepository;
     @Test
-    public void getAll(){
-        List<DriverInformation> list = driverRepository.find();
+    public void getAll() {
+        /*List<DriverInformation> list = driverRepository.find();
         for(DriverInformation d:list){
             System.out.println(d);
-        }
+        }*/
+        /*int[] p={1,5,6,4,6,9};
+        int temp;
+        for(int i=0;i<5;i++){
+            for(int j=i ;j<5;j++){
+                if(p[j]>p[j+1]){}{
+                    temp=p[j];
+                    p[j]=p[j+1];
+                    p[i+1]=temp;
+                }
+            }
+                System.out.println(Arrays.toString(p));
+    }*/
     }
-
     /**
      * 用于批量增加数据。
      */
