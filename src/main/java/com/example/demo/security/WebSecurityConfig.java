@@ -25,6 +25,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.access.intercept.FilterSecurityInterceptor;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -60,11 +61,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         security.authorizeRequests().
                 antMatchers("/css/**","/img/**","/js/**").permitAll().
                 antMatchers("/operateDriver").hasRole("admin").
-                /*accessDecisionManager(getAccessDecisionManager()).*/
                 anyRequest().authenticated().
                         and().
                         formLogin().loginPage("/login").
-                        successForwardUrl("/index").failureForwardUrl("/index").permitAll().
+                        successForwardUrl("/index").failureForwardUrl("/login").permitAll().
+                        //successHandler(loginSuccessHandler()).permitAll().
                         and().logout().permitAll().invalidateHttpSession(true).
                         deleteCookies("JSESSIONID").logoutSuccessHandler(logoutSuccessHandler()).
                         and().exceptionHandling().accessDeniedHandler(accessDeniedHandler()).
@@ -116,7 +117,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             }
         };
     }
-    @Bean
+
+    /*@Bean
     public SavedRequestAwareAuthenticationSuccessHandler loginSuccessHandler() { //登入处理
         return new SavedRequestAwareAuthenticationSuccessHandler() {
             @Override
@@ -126,8 +128,32 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 super.onAuthenticationSuccess(request, response, authentication);
             }
         };
-    }
+    }*/
+    /************************************angular**************************************************/
+    @Bean
+    public AuthenticationSuccessHandler loginSuccessHandler() { //angular登录成功后
+        return new AuthenticationSuccessHandler(){
+            @Override
+            public void onAuthenticationSuccess(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Authentication authentication) throws IOException, ServletException {
+                httpServletResponse.setCharacterEncoding("utf-8");
+                httpServletResponse.getWriter().write("driverList/");
+            }
 
+        };
+    }
+    /*@Bean
+    public onAuthenticationFilureHandler loginFailHandler() { //angular登录失败
+        return new SavedRequestAwareAuthenticationSuccessHandler() {
+            @Override
+            public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
+                User userDetails = (User) authentication.getPrincipal();
+                response.setCharacterEncoding("utf-8");
+                response.getWriter().write("false");
+                super.onAuthenticationSuccess(request, response, authentication);
+            }
+        };
+    }*/
+    /***********************************angular****************************************************/
     @Bean
     public LogoutSuccessHandler logoutSuccessHandler() { //登出处理
         return new LogoutSuccessHandler() {
@@ -143,7 +169,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             }
         };
     }
-
     @Override
     @Bean
     public UserDetailsService userDetailsService() {    //用户登录实现

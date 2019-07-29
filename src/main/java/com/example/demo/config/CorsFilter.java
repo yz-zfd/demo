@@ -1,5 +1,7 @@
 package com.example.demo.config;
 
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.*;
@@ -8,6 +10,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 @Component
+//order注解的作用设置其级别，这里是最高的，其值为最少
+@Order(Ordered.HIGHEST_PRECEDENCE)
 public class CorsFilter implements Filter {
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
