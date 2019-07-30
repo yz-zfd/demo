@@ -59,7 +59,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity security) throws Exception {
         security.csrf().disable();
         security.authorizeRequests().
-                antMatchers("/css/**","/img/**","/js/**","/loginOfAngular").permitAll().
+                antMatchers("/css/**","/img/**","/js/**","/loginOfAngular","/login").permitAll().
                 antMatchers("/operateDriver").hasRole("admin").
                 anyRequest().authenticated().
                         and().
