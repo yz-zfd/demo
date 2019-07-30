@@ -10,6 +10,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -41,9 +42,9 @@ public class LoginController {
      */
     @RequestMapping(value = "/loginOfAngular",method = RequestMethod.POST)
     @ResponseBody
-    public String loginOfAngular(String username, String password, HttpServletRequest req, HttpServletResponse resp){
+    public String loginOfAngular(String username,String password){
 
-        User user = userRepository.findByUsername(req.getParameter("username"));
+        User user = userRepository.findByUsername(username);
         if(user==null){
             System.out.println(username+password);
             return "false";
@@ -56,11 +57,11 @@ public class LoginController {
                 UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(username,password,securityUser.getAuthorities());
                 SecurityContextHolder.getContext().setAuthentication(token);
                 System.out.println("true");
-                return "driverList/";
+                return "true";
             }
 
         }
-        return "";
+        return "false";
     }
 }
 
