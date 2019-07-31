@@ -10,6 +10,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.access.AccessDecisionManager;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.ObjectPostProcessor;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -29,15 +30,13 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.cors.CorsUtils;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @author zfd
@@ -57,19 +56,20 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
      */
     @Override
     protected void configure(HttpSecurity security) throws Exception {
-        security.csrf().disable();
+        /*security.csrf().disable();
         security.authorizeRequests().
-                antMatchers("/css/**","/img/**","/js/**","/loginOfAngular","/login").permitAll().
+                antMatchers("/css/**","/img/**","/js/**","/loginOfAngular").permitAll().
                 antMatchers("/operateDriver").hasRole("admin").
-                anyRequest().authenticated().
+                requestMatchers(CorsUtils::isPreFlightRequest).permitAll().
+        anyRequest().authenticated().
                         and().
-                        formLogin().loginPage("/login").
-                        successForwardUrl("/index").failureForwardUrl("/login").permitAll().
-                        //successHandler(loginSuccessHandler()).permitAll().
+                        formLogin().loginProcessingUrl("/angularLogin").permitAll().*//*loginPage("/login").*//*
+                        *//*successForwardUrl("/index").failureForwardUrl("/login").permitAll().*//*
+                        successHandler(loginSuccessHandler()).permitAll().
                         and().logout().permitAll().invalidateHttpSession(true).
                         deleteCookies("JSESSIONID").logoutSuccessHandler(logoutSuccessHandler()).
                         and().exceptionHandling().accessDeniedHandler(accessDeniedHandler()).
-                        and().sessionManagement().maximumSessions(10).expiredUrl("/index");
+                        and().sessionManagement().maximumSessions(10).expiredUrl("/index");*/
         /*FilterSecurityInterceptor f=null;*/
 
                 //自定义安全策略
@@ -135,8 +135,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         return new AuthenticationSuccessHandler(){
             @Override
             public void onAuthenticationSuccess(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Authentication authentication) throws IOException, ServletException {
+                UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(authentication.getPrincipal(), authentication.getCredentials(), authentication.getAuthorities());
                 httpServletResponse.setCharacterEncoding("utf-8");
-                httpServletResponse.getWriter().write("driverList/");
+                httpServletResponse.getWriter().write(token.toString());
             }
 
         };
