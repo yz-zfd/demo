@@ -6,7 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 
@@ -71,17 +73,12 @@ public class DriverController {
     }
 
     //angular
-    @RequestMapping("/uploadPhoto")
+    @RequestMapping(value = "/uploadPhoto",method = RequestMethod.POST)
     @ResponseBody
-    public String uploadPhoto(HttpServletRequest req, HttpServletResponse res) {
-        CommonsMultipartResolver resolver = new CommonsMultipartResolver(req.getSession().getServletContext());
-        if (resolver.isMultipart(req)) {
-            MultipartHttpServletRequest MultiReq = (MultipartHttpServletRequest) req;
-            Iterator it = MultiReq.getFileNames();
-            while (it.hasNext()) {
-
-            }
+    public String uploadPhoto(@RequestParam("file") MultipartFile uploadFile) {
+        if(uploadFile!=null){
+            System.out.println("sss");
         }
-        return null;
+        return "ss";
     }
 }
